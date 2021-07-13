@@ -6,7 +6,9 @@
     <button class="btn btn__cta"><i class="fas fa-search ic"></i><a href="<?php echo SERVER_URL;
     ?>product-search/">Search Product</a></button>
 </div>
-<form action="" class="form-neon box" autocomplete="off">
+<form class="Ajax_Form form-neon box" action="<?php echo SERVER_URL;?>ajax/productAjax.php" method="post"
+      data-form="save"
+      autocomplete="off">
     <fieldset>
         <legend><i class="fas fa-boxes ic"></i> &nbsp; Product Information</legend>
         <div class="container-fluid">
@@ -27,7 +29,8 @@
                 <div class="col-12 col-md-3">
                     <div class="form-group">
                         <label for="product_stock" class="bmd-label-floating">Stock</label>
-                        <input type="num" pattern="[0-9]{1,9}" class="form-control" name="product_stock_reg" id="product_stock" maxlength="9">
+                        <input type="number" pattern="[0-9]{1,9}" class="form-control" name="product_stock_reg"
+                               id="product_stock" maxlength="9">
                     </div>
                 </div>
                 <div class="col-12 col-md-3">
@@ -40,10 +43,10 @@
                         </select>
                     </div>
                 </div>
-              <div class="col-12 col-md-3">
+              <div class="col-12">
                 <div class="form-group">
                   <label for="product_detail" class="bmd-label-floating">Detail</label>
-                  <input type="num" pattern="[a-zA-Z0-9-]{1,45}" class="form-control" name="product_detail_reg"
+                  <input type="text" pattern="[a-zA-Z0-9- ]{1,45}" class="form-control" name="product_detail_reg"
                          id="product_detail" maxlength="45"></div>
               </div>
             </div>

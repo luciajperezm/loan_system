@@ -64,7 +64,7 @@ class productController extends productModel
         }
 
         if($detail != ""){
-            if(mainModel::verify_input_data("[a-zA-Z0-9-]{1,45}", $detail)){
+            if(mainModel::verify_input_data("[a-zA-Z0-9- ]{1,45}", $detail)){
                 $alert = [
                     "Alert" => "simple",
                     "Title" => "Something went wrong",
@@ -93,26 +93,51 @@ class productController extends productModel
             $alert = [
                 "Alert" => "simple",
                 "Title" => "Something went wrong",
-                "Text" => "Thi Product is already registered",
+                "Text" => "This Product is already registered",
                 "Type" => "error"
             ];
             echo json_encode($alert);
             exit();
         }
 
-        $check_name = mainModel::execute_simple_queries("SELECT item_nombre FROM item WHERE item_nombre='$code'");
+        $check_name = mainModel::execute_simple_queries("SELECT item_nombre FROM item WHERE item_nombre='$name'");
         if($check_name->rowCount() > 0){
             $alert = [
                 "Alert" => "simple",
                 "Title" => "Something went wrong",
-                "Text" => "Thi Product is already registered",
+                "Text" => "This Product is already registered",
                 "Type" => "error"
             ];
             echo json_encode($alert);
             exit();
         }
 
+        $data_product_reg = [
+            "Code" => $code,
+            "Name" => $name,
+            "Stock" => $stock,
+            "Status" => $status,
+            "Detail" => $detail
+        ];
 
+        $add_product = productModel::add_product_model($data_product_reg);
+
+        if($add_product->rowCount() == 1){
+            $alert = [
+                "Alert" => "clean",
+                "Title" => "Great News",
+                "Text" => "This Product successfully registered",
+                "Type" => "success"
+            ];
+        }else{
+            $alert = [
+                "Alert" => "simple",
+                "Title" => "Something went wrong",
+                "Text" => "We couldn't register this product",
+                "Type" => "error"
+            ];
+        }
+        echo json_encode($alert);
     }
 
 

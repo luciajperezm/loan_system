@@ -6,10 +6,13 @@ CURRENT PROBLEMS
 
 FIXED PROBLEMS
 - fix buttons in reservations module, some of them are not properly organized
-- USER (Create, delete)
+- USER (Create, delete, read, update)
+- CUSTOMER (Create, delete, read, update)
+- COMPANY (Create, read, update)
+- PRODUCT (Create)
 - login, logout
 
 
 
-CURRENT VIDEO
-71
+CV
+72,7:14

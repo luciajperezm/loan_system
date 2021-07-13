@@ -34,7 +34,7 @@
                     <div class="form-group">
                         <label for="product_status" class="bmd-label-floating">Status</label>
                         <select class="form-control" name="product_status_reg" id="product_status">
-                            <option value="" selected="" disabled="">Choose an option</option>
+                            <option value="" selected="">Choose an option</option>
                             <option value="Available">Available</option>
                             <option value="Unavailable">Unavailable</option>
                         </select>

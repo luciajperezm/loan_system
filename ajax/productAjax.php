@@ -3,16 +3,16 @@
 $ajaxRequest = true;
 require_once "../config/APP.php";
 
-if(isset($_POST['']) || isset($_POST['']) || isset($_POST[''])){
+if(isset($_POST['product_code_reg'])){
 
     /*--- New Instance to the controller ---*/
     require_once "../controllers/productController.php";
     $ins_product = new productController();
 
-    /*--- ADD CUSTOMER CONTROLLER ---*/
-    /*if(isset($_POST['customer_name_reg']) && isset($_POST['customer_lastname_reg'])){
-        echo $ins_product->add_customer_controller();
-    }*/
+    /*--- ADD PRODUCT CONTROLLER ---*/
+    if(isset($_POST['product_code_reg'])){
+        echo $ins_product->add_product_controller();
+    }
 
     /*--- DELETE CUSTOMER CONTROLLER ---*/
     /*if(isset($_POST['customer_id_del'])){

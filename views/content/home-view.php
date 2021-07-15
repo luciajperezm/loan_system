@@ -19,14 +19,20 @@
       </div>
     </a>
 
+      <?php
+      if($_SESSION['privilege_loan'] == 1){
+      require_once "./controllers/productController.php";
+      $ins_product = new productController();
+      $reg_products = $ins_product->data_product_controller("Count",0)
+      ?>
     <a href="<?php echo SERVER_URL; ?>product-search/" class="tile">
-      <div class="tile-tittle">Items</div>
+      <div class="tile-tittle">products</div>
       <div class="tile-icon">
         <i class="fas fa-pallet fa-fw"></i>
-        <p>9 Registrados</p>
+        <p><?php echo $reg_products->rowCount();?> Registered</p>
       </div>
     </a>
-
+      <?php } ?>
     <a href="<?php echo SERVER_URL; ?>reservation-reservation/" class="tile">
       <div class="tile-tittle">Reservaciones</div>
       <div class="tile-icon">

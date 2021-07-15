@@ -253,6 +253,233 @@ autocomplete="off">
         return $table;
     }
 
+    /*--- DELETE PRODUCT CONTROLLER ---*/
+    public function delete_product_controller(){
 
+        /*Receiving id from product*/
+        $id = mainModel::decryption($_POST['product_id_del']);
+        $id = mainModel::clean_input($id);
+
+        /*testing product in data base*/
+        $check_product_db = mainModel::execute_simple_queries("SELECT item_id FROM item WHERE item_id = '$id'");
+        if($check_product_db->rowCount() <= 0){
+            $alert = [
+                "Alert" => "simple",
+                "Title" => "Something went wrong",
+                "Text" => "This product doesn't exist",
+                "Type" => "error"
+            ];
+            echo json_encode($alert);
+            exit();
+        }
+
+        /*checking if a loan was made with the selected product*/
+        $check_product_loan = mainModel::execute_simple_queries("SELECT item_id FROM detalle WHERE item_id = '$id' LIMIT 1");
+        if($check_product_loan->rowCount() > 0){
+            $alert = [
+                "Alert" => "simple",
+                "Title" => "Something went wrong",
+                "Text" => "A loan was made with this product and cannot be delete, you may change its status to Unavailable",
+                "Type" => "error"
+            ];
+            echo json_encode($alert);
+            exit();
+        }
+
+
+        /*checking user privilege*/
+        session_start(['name' => 'LOAN']);
+        if($_SESSION['privilege_loan'] != 1){
+            $alert = [
+                "Alert" => "simple",
+                "Title" => "Something went wrong",
+                "Text" => "You are not allowed to do this",
+                "Type" => "error"
+            ];
+            echo json_encode($alert);
+            exit();
+        }
+
+        /*deleting product*/
+        $delete_product = productModel::delete_product_model($id);
+        if($delete_product->rowCount() == 1){
+            $alert = [
+                "Alert" => "reload",
+                "Title" => "Product deleted",
+                "Text" => "The product was successfully deleted",
+                "Type" => "success"
+            ];
+        }else {
+            $alert = [
+                "Alert" => "simple",
+                "Title" => "Something went wrong",
+                "Text" => "We couldn't delete this product",
+                "Type" => "error"
+            ];
+        }
+        echo json_encode($alert);
+    }
+
+    /*--- DATA PRODUCT CONTROLLER ---*/
+    public function data_product_controller($type, $id){
+        //getting variables ready
+        $type = mainModel::clean_input($type);
+        $id = mainModel::decryption($id);
+        $id = mainModel::clean_input($id);
+
+        return productModel::data_product_model($type, $id);
+    }
+
+    /*--- UPDATE PRODUCT CONTROLLER ---*/
+    public function update_product_controller()
+    {
+        //receive id
+        $id = mainModel::decryption($_POST['product_id_up']);
+        $id = mainModel::clean_input($id);
+
+        //make sure product exists in bd
+        $check_product = mainModel::execute_simple_queries("SELECT * FROM item WHERE item_id='$id'");
+        if($check_product->rowCount() <= 0){
+            $alert = [
+                "Alert" => "simple",
+                "Title" => "Something went wrong",
+                "Text" => "We couldn't find this product",
+                "Type" => "error"
+            ];
+            echo json_encode($alert);
+            exit();
+        }else {
+            $fields = $check_product->fetch();
+        }
+
+        $code = mainModel::clean_input($_POST['product_code_up']);
+        $name = mainModel::clean_input($_POST['product_name_up']);
+        $stock = mainModel::clean_input($_POST['product_stock_up']);
+        $status = mainModel::clean_input($_POST['product_status_up']);
+        $detail = mainModel::clean_input($_POST['product_detail_up']);
+
+
+        if(isset($_POST['product_status_up'])){
+            $status = mainModel::clean_input($_POST['product_status_up']);
+        }else {
+            $status = $fields['product_status'];
+        }
+
+        /*- Checking for empty fields -*/
+        if($code == "" || $name == "" || $stock == "" || $status == ""){
+            $alert = [
+                "Alert" => "simple",
+                "Title" => "Something went wrong",
+                "Text" => "Some input fields are empty",
+                "Type" => "error"
+            ];
+            echo json_encode($alert);
+            exit();
+        }
+
+        //product code input
+        if(mainModel::verify_input_data("[a-zA-Z0-9-]{1,45}", $code)){
+            $alert = [
+                "Alert" => "simple",
+                "Title" => "Something went wrong",
+                "Text" => "The code is not valid",
+                "Type" => "error"
+            ];
+            echo json_encode($alert);
+            exit();
+        }
+
+        //product name input
+        if(mainModel::verify_input_data("[a-zA-záéíóúÁÉÍÓÚñÑ0-9 ]{1,140}", $name)){
+            $alert = [
+                "Alert" => "simple",
+                "Title" => "Something went wrong",
+                "Text" => "The Name is not valid",
+                "Type" => "error"
+            ];
+            echo json_encode($alert);
+            exit();
+        }
+
+        //product stock input
+        if(mainModel::verify_input_data("[0-9]{1,9}", $stock)){
+            $alert = [
+                "Alert" => "simple",
+                "Title" => "Something went wrong",
+                "Text" => "The Code is not valid",
+                "Type" => "error"
+            ];
+            echo json_encode($alert);
+            exit();
+        }
+
+        if($detail != ""){
+            if(mainModel::verify_input_data("[a-zA-záéíóúÁÉÍÓÚñÑ0-9 ]{1,140}", $detail)){
+                $alert = [
+                    "Alert" => "simple",
+                    "Title" => "Something went wrong",
+                    "Text" => "The Detail message is not valid",
+                    "Type" => "error"
+                ];
+                echo json_encode($alert);
+                exit();
+            }
+        }
+
+        if($status != "Available" && $status != "Unavailable"){
+            $alert = [
+                "Alert" => "simple",
+                "Title" => "Something went wrong",
+                "Text" => "The Status is not valid",
+                "Type" => "error"
+            ];
+            echo json_encode($alert);
+            exit();
+        }
+
+        //checking if code is already in the system
+        if($code != $fields['item_codigo']){
+            $check_code = mainModel::execute_simple_queries("SELECT item_codigo FROM item WHERE item_codigo='$code'");
+            if($check_code->rowCount()>0){
+                $alert = [
+                    "Alert" => "simple",
+                    "Title" => "Something went wrong",
+                    "Text" => "This Code is already registered",
+                    "Type" => "error"
+                ];
+                echo json_encode($alert);
+                exit();
+            }
+        }
+
+        /* Preparing data to send it to model */
+        $data_product_up = [
+            "Code" => $code,
+            "Name" => $name,
+            "Stock" => $stock,
+            "Status" => $status,
+            "Detail" => $detail,
+            "ID" => $id
+        ];
+        if(productModel::update_product_model($data_product_up)){
+            $alert = [
+                "Alert" => "reload",
+                "Title" => "Done!",
+                "Text" => "This product was successfully updated",
+                "Type" => "success"
+            ];
+        }else{
+            $alert = [
+                "Alert" => "simple",
+                "Title" => "Something went wrong",
+                "Text" => "We couldn't update this product",
+                "Type" => "error"
+            ];
+        }
+        echo json_encode($alert);
+
+
+
+    }
 
 }

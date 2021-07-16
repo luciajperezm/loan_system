@@ -11,18 +11,24 @@
 </div>
 <p class="text-center roboto-medium">ADD A CUSTOMER OR PRODUCTS</p>
 <p class="text-center">
+    <?php if(empty($_SESSION['data_customer'])){ ?>
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#ModalCustomer"><i class="fas
     fa-user-plus"></i> &nbsp; Add a Customer</button>
+    <?php  } ?>
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#ModalItem"><i class="fas
     fa-box-open"></i> &nbsp; Add Products</button>
 </p>
 <div>
     <span class="roboto-medium">Customer:</span>
+    <?php if(empty($_SESSION['data_customer'])){ ?>
     <span class="text-danger">&nbsp; <i class="fas fa-exclamation-triangle"></i> Choose a Customer</span>
-    <form action="" style="display: inline-block !important;">
-        Carlos Lopez
+    <?php }else { ?>
+  <form class="Ajax_Form" action="<php echo SERVER_URL; ?>ajax/loanAjax.php" style="display: inline-block !important;">
+    <input type="hidden" name="id_delete_customer" value="<?php echo $_SESSION['data_customer']['ID']; ?>">
+        <?php echo $_SESSION['data_customer']['Name']. " ".$_SESSION['data_customer']['LastName']." (".$_SESSION['data_customer']['DNI'].")"; ?>
         <button type="button" class="btn btn-danger"><i class="fas fa-user-times"></i></button>
     </form>
+    <?php } ?>
 </div>
 
 <table class="table table-sm">
@@ -169,25 +175,11 @@
                 </div>
                 <br>
                 <div class="container-fluid" id="table_customers">
-                    <div class="table-responsive">
-                        <table class="table table-hover table-bordered table-sm">
-                            <tbody>
-                            <tr class="text-center">
-                                <td>0000000000 - Lucia Perez</td>
-                                <td>
-                                    <button type="button" class="btn btn-primary"><i class="fas fa-user-plus"></i></button>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
+
+
+
                 </div>
-                <div class="alert alert-warning" role="alert">
-                    <p class="text-center mb-0">
-                        <i class="fas fa-exclamation-triangle fa-2x"></i><br>
-                        We couldn't find any customer that matched with <strong>“Search”</strong>
-                    </p>
-                </div>
+
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-primary" onclick="search_customer()"><i class="fas fa-search

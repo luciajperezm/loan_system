@@ -54,4 +54,44 @@ function add_customer(id){
         }
     });
 }
+
+function search_product(){
+    let input_product = document.querySelector('#input_item').value;
+
+    input_product = input_product.trim();
+
+    if(input_product != ""){
+        let data = new FormData();
+        data.append("search_product", input_product);
+
+        fetch("<?php echo SERVER_URL; ?>ajax/loanAjax.php",{
+            method: 'POST',
+            body: data
+        })
+            .then(answer => answer.text())
+            .then(answer => {
+                let table_products = document.querySelector('#tabla_items');
+                table_products.innerHTML = answer;
+            });
+    }else {
+        Swal.fire({
+            title: 'Something went wrong!',
+            text: 'You have to introduce the Code or Name of the product',
+            type: 'error',
+            confirmButtonColor: '#333',
+            cancelButtonColor: '#d33',
+        });
+    }
+}
+
+function modal_add_products(id){
+    $('#ModalItem').modal('hide');
+    $('#ModalAddProduct').modal('show');
+    document.querySelector('#id_add_product').setAttribute("value", id);
+}
+
+function modal_search_product(){
+    $('#ModalAddProduct').modal('hide');
+    $('#ModalItem').modal('show');
+}
 </script>

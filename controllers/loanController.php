@@ -125,6 +125,165 @@ class loanController extends loanModel
         }
         echo json_encode($alert);
     }
+
+    /*--- SEARCH PRODUCT FOR LOAN CONTROLLER ---*/
+    public function search_product_loan_controller()
+    {
+        /* receive text */
+        $product = mainModel::clean_input($_POST['search_product']);
+
+        if($product == ""){
+            return '<div class="alert alert-warning" role="alert">
+                    <p class="text-center mb-0">
+                        <i class="fas fa-exclamation-triangle fa-2x"></i><br>
+                        The input field is empty
+                    </p>
+                </div>';
+            exit();
+        }
+
+        /* product in db */
+        $data_product = mainModel::execute_simple_queries("SELECT * FROM item WHERE item_codigo LIKE '%$product%' OR item_nombre LIKE '%$product%' AND item_estado = 'Available' ORDER BY item_nombre");
+
+        if($data_product->rowCount() >= 1){
+            $data_product = $data_product->fetchAll();
+            $table = '<div class="table-responsive"><table class="table table-hover table-bordered table-sm"><tbody>';
+            foreach($data_product as $rows){
+                $table.='<tr class="text-center">
+                                <td>'.$rows['item_codigo'].' - '.$rows['item_nombre'].'</td><td><button type="button" class="btn btn-primary" onclick="modal_add_products('.$rows['item_id'].')"><i class="fas fa-box-open"></i></button></td></tr>';
+            }
+
+            $table.=' </tbody></table></div>';
+            return $table;
+        }else{
+            return '<div class="alert alert-warning" role="alert">
+                    <p class="text-center mb-0">
+                        <i class="fas fa-exclamation-triangle fa-2x"></i><br>
+                        We couldn\'t find a product that matched with <strong>"'.$product.'"</strong>
+                    </p>
+                </div>';
+            exit();
+        }
+    }
+
+    /*--- ADD PRODUCT FOR LOAN CONTROLLER ---*/
+    public function add_product_loan_controller()
+    {
+        $id = mainModel::clean_input($_POST['id_add_product']);
+
+        $data_product = mainModel::execute_simple_queries("SELECT * FROM item WHERE (item_id='$id') AND (item_estado = 'Available')");
+
+        if($data_product->rowCount() <= 0){
+            $alert = [
+                "Alert" => "simple",
+                "Title" => "Something went wrong",
+                "Text" => "We couldn't find this product",
+                "Type" => "error"
+            ];
+            echo json_encode($alert);
+            exit();
+        }else{
+            $fields = $data_product->fetch();
+        }
+
+        $format = mainModel::clean_input($_POST['detail_format']);
+        $quantity = mainModel::clean_input($_POST['detail_quantity']);
+        $time = mainModel::clean_input($_POST['detail_time']);
+        $cost = mainModel::clean_input($_POST['detail_cost_time']);
+
+        if($quantity == "" || $time == "" || $cost == ""){
+            $alert = [
+                "Alert" => "simple",
+                "Title" => "Something went wrong",
+                "Text" => "Some input fields are empty",
+                "Type" => "error"
+            ];
+            echo json_encode($alert);
+            exit();
+        }
+
+        if(mainModel::verify_input_data("[0-9]{1,7}", $quantity)){
+            $alert = [
+                "Alert" => "simple",
+                "Title" => "Something went wrong",
+                "Text" => "The Quantity is not correct",
+                "Type" => "error"
+            ];
+            echo json_encode($alert);
+            exit();
+        }
+
+        if(mainModel::verify_input_data("[0-9]{1,7}", $time)){
+            $alert = [
+                "Alert" => "simple",
+                "Title" => "Something went wrong",
+                "Text" => "The Time is not correct",
+                "Type" => "error"
+            ];
+            echo json_encode($alert);
+            exit();
+        }
+
+        if(mainModel::verify_input_data("[0-9.]{1,15}", $cost)){
+            $alert = [
+                "Alert" => "simple",
+                "Title" => "Something went wrong",
+                "Text" => "The Cost is not correct",
+                "Type" => "error"
+            ];
+            echo json_encode($alert);
+            exit();
+        }
+
+        if($format != "Hours" && $format != "Days" && $format != "Event" && $format != "Month"){
+            $alert = [
+                "Alert" => "simple",
+                "Title" => "Something went wrong",
+                "Text" => "The Format is not correct",
+                "Type" => "error"
+            ];
+            echo json_encode($alert);
+            exit();
+        }
+
+        session_start(['name' => 'LOAN']);
+        if(empty($_SESSION['data_product'][$id])){
+            $cost = number_format($cost, 2, '.', '');
+
+            $_SESSION['data_product'][$id] = [
+                "ID" => $fields['item_id'],
+                "Code" => $fields['item_codigo'],
+                "Name" => $fields['item_nombre'],
+                "Detail" => $fields['item_detalle'],
+                "Format" => $format,
+                "Quantity" => $quantity,
+                "Time" => $time,
+                "Cost" => $cost
+            ];
+            $alert = [
+                "Alert" => "reload",
+                "Title" => "Done!",
+                "Text" => "The Product was successfully added to the transaction",
+                "Type" => "success"
+            ];
+            echo json_encode($alert);
+            exit();
+        }else{
+            $alert = [
+                "Alert" => "simple",
+                "Title" => "Something went wrong",
+                "Text" => "The Product you are trying to add is already selected",
+                "Type" => "error"
+            ];
+            echo json_encode($alert);
+            exit();
+        }
+
+    }
+
+
+
+
 }
 
 

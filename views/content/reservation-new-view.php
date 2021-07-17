@@ -23,10 +23,11 @@
     <?php if(empty($_SESSION['data_customer'])){ ?>
     <span class="text-danger">&nbsp; <i class="fas fa-exclamation-triangle"></i> Choose a Customer</span>
     <?php }else { ?>
-  <form class="Ajax_Form" action="<php echo SERVER_URL; ?>ajax/loanAjax.php" style="display: inline-block !important;">
+  <form class="Ajax_Form" action="<?php echo SERVER_URL; ?>ajax/loanAjax.php" style="display: inline-block
+  !important;" method="post">
     <input type="hidden" name="id_delete_customer" value="<?php echo $_SESSION['data_customer']['ID']; ?>">
         <?php echo $_SESSION['data_customer']['Name']. " ".$_SESSION['data_customer']['LastName']." (".$_SESSION['data_customer']['DNI'].")"; ?>
-        <button type="button" class="btn btn-danger"><i class="fas fa-user-times"></i></button>
+        <button type="submit" class="btn btn-danger"><i class="fas fa-user-times"></i></button>
     </form>
     <?php } ?>
 </div>
@@ -211,28 +212,16 @@
                 </div>
                 <br>
                 <div class="container-fluid" id="tabla_items">
-                    <div class="table-responsive">
-                        <table class="table table-hover table-bordered table-sm">
-                            <tbody>
-                            <tr class="text-center">
-                                <td>000000000000 - Wooden Table</td>
-                                <td>
-                                    <button type="button" class="btn btn-primary"><i class="fas fa-box-open"></i></button>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
+
+
+
                 </div>
-                <div class="alert alert-warning" role="alert">
-                    <p class="text-center mb-0">
-                        <i class="fas fa-exclamation-triangle fa-2x"></i><br>
-                        We couldn't find any product that matches with <strong>“Search”</strong>
-                    </p>
-                </div>
+
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary"><i class="fas fa-search fa-fw"></i> &nbsp; Search</button>
+                <button type="button" class="btn btn-primary" onclick="search_product()"><i class="fas fa-search
+                fa-fw"></i> &nbsp;
+                  Search</button>
                 &nbsp; &nbsp;
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
@@ -244,7 +233,8 @@
 <div class="modal fade" id="ModalAddProduct" tabindex="-1" role="dialog" aria-labelledby="ModalAddProduct"
      aria-hidden="true">
     <div class="modal-dialog" role="document">
-        <form class="modal-content Ajax_Form">
+        <form class="modal-content Ajax_Form" action="<?php echo SERVER_URL;?>ajax/loanAjax.php" method="post"
+              data-form="default" autocomplete="off">
             <div class="modal-header">
                 <h5 class="modal-title" id="ModalAddProduct">Choose a format, quantity of items, cost of time per
                   item</h5>
@@ -294,7 +284,7 @@
             <div class="modal-footer">
                 <button type="submit" class="btn btn-primary" >Add</button>
                 &nbsp; &nbsp;
-                <button type="button" class="btn btn-secondary" >Cancel</button>
+                <button type="button" class="btn btn-secondary"  onclick="modal_search_product()">Cancel</button>
             </div>
         </form>
     </div>

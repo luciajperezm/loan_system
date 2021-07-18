@@ -29,7 +29,7 @@ function send_ajax_form(e){
     }else if(type==="search"){
         alert_text="This Term will be deleted and you will have to write it again";
     }else if(type==="loans"){
-        alert_text="This Data will be deleted from the Loan or Reservation";
+        alert_text="This product will be deleted from the transaction";
     }else{
         alert_text="The request is being processed";
     }

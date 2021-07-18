@@ -281,7 +281,31 @@ class loanController extends loanModel
 
     }
 
+    /*--- DELETE PRODUCT FOR LOAN CONTROLLER ---*/
+    public function delete_product_loan_controller()
+    {
+        $id = mainModel::clean_input($_POST['id_delete_product']);
 
+        session_start(['name' => 'LOAN']);
+        unset($_SESSION['data_product'][$id]);
+
+        if(empty($_SESSION['data_product'][$id])){
+            $alert = [
+                "Alert" => "reload",
+                "Title" => "Done!",
+                "Text" => "The product was successfully removed",
+                "Type" => "success"
+            ];
+        }else {
+            $alert = [
+                "Alert" => "simple",
+                "Title" => "Something went wrong",
+                "Text" => "We couldn't remove this product",
+                "Type" => "error"
+            ];
+        }
+        echo json_encode($alert);
+    }
 
 
 }

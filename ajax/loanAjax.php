@@ -4,7 +4,7 @@ $ajaxRequest = true;
 require_once "../config/APP.php";
 
 if(isset($_POST['search_customer']) || isset($_POST['id_add_customer']) || isset($_POST['id_delete_customer']) || isset
-    ($_POST['search_product']) || isset($_POST['id_add_product'])){
+    ($_POST['search_product']) || isset($_POST['id_add_product']) || isset($_POST['id_delete_product'])){
 
     /*--- New instance to the controller ---*/
     require_once "../controllers/loanController.php";
@@ -33,6 +33,11 @@ if(isset($_POST['search_customer']) || isset($_POST['id_add_customer']) || isset
     /*--- ADD PRODUCT IN LOAN ---*/
     if(isset($_POST['id_add_product'])){
         echo $ins_loan->add_product_loan_controller();
+    }
+
+    /*--- DELETE PRODUCT IN LOAN ---*/
+    if(isset($_POST['id_delete_product'])){
+        echo $ins_loan->delete_product_loan_controller();
     }
 
 }else {

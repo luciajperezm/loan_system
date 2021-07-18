@@ -35,37 +35,69 @@
 <table class="table table-sm">
     <thead >
     <tr class="t-row">
-        <th>#</th>
         <th class="text-center ">Item</th>
-        <th class="text-center ">cantidad</th>
-        <th class="text-center ">tiempo</th>
-        <th class="text-center ">costo</th>
+        <th class="text-center ">quantity</th>
+        <th class="text-center ">Time Unit</th>
+        <th class="text-center ">cost</th>
         <th class="text-center ">subtotal</th>
-        <th class="text-center ">detalle</th>
+        <th class="text-center ">detail</th>
         <th class="text-center ">Delete</th>
     </tr>
     </thead>
+    <?php
+    if(isset($_SESSION['data_product']) && count($_SESSION['data_product']) >= 1){
+
+      $_SESSION['loan_total'] = 0;
+      $_SESSION['loan_item'] = 0;
+
+      foreach($_SESSION['data_product'] as $prod){
+        $subtotal = $prod['Quantity'] * ($prod['Cost'] * $prod['Time']);
+        $subtotal = number_format($subtotal, 2, '.', '');
+
+      ?>
     <tbody class="table__body">
     <tr>
-        <td class="text-center ">1</td>
-        <td class="text-center ">1265641</td>
-        <td class="text-center ">HAMMER</td>
-        <td class="text-center ">23</td>
-        <td class="text-center ">50</td>
-        <td class="text-center ">23</td>
+        <td class="text-center "><?php echo $prod['Name']; ?></td>
+        <td class="text-center "><?php echo $prod['Quantity']; ?></td>
+        <td class="text-center "><?php echo $prod['Time']." ".$prod['Format']; ?></td>
+        <td class="text-center "><?php echo CURRENCY.$prod['Cost']." x 1 Time unit"; ?></td>
+        <td class="text-center "><?php echo CURRENCY.$subtotal; ?></td>
         <td class="text-center">
-            <button type="button" class="btn btn-info" data-toggle="popover" data-trigger="hover" title="Nombre del item" data-content="Detalle completo del item">
+            <button type="button" class="btn btn-info" data-toggle="popover" data-trigger="hover" title="<?php echo $prod['Name']; ?>" data-content="<?php echo $prod['Detail']; ?>">
                 <i class="fas fa-info-circle"></i>
             </button>
         </td>
         <td class="text-center ">
-            <form action="" class="form-table">
-                <button type="button" class="btn btn-warning">
+            <form class="form-table Ajax_Form" action="<?php echo SERVER_URL;?>ajax/loanAjax.php" method="post"
+                  data-form="loans" autocomplete="off">
+              <input type="hidden" name="id_delete_product" value="<?php echo $prod['ID'];?>">
+                <button type="submit" class="btn btn-warning">
                     <i class="far fa-trash-alt"></i>
                 </button>
             </form>
         </td>
     </tr>
+          <?php
+          $_SESSION['loan_total'] += $subtotal;
+          $_SESSION['loan_item'] += $prod['Quantity'];
+
+      } ?>
+    <tr>
+      <td class="text-center "><strong>TOTAL</strong></td>
+      <td class="text-center "><strong><?php echo  $_SESSION['loan_item']; ?> Items</strong></td>
+      <td class="text-center" colspan="2"></td>
+      <td class="text-center "><strong><?php echo CURRENCY.number_format($_SESSION['loan_total'], 2, '.', ''); ?></strong></td>
+      <td class="text-center " colspan="2"></td>
+    </tr>
+    <?php
+    }else{
+        $_SESSION['loan_total'] = 0;
+        $_SESSION['loan_item'] = 0;
+    ?>
+    <tr>
+      <td class="text-center " colspan="7">You haven't selected any product</td>
+    </tr>
+    <?php } ?>
     </tbody>
 </table>
 <form action="" autocomplete="off">
@@ -175,12 +207,7 @@
                     </div>
                 </div>
                 <br>
-                <div class="container-fluid" id="table_customers">
-
-
-
-                </div>
-
+                <div class="container-fluid" id="table_customers"></div>
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-primary" onclick="search_customer()"><i class="fas fa-search
@@ -211,12 +238,7 @@
                     </div>
                 </div>
                 <br>
-                <div class="container-fluid" id="tabla_items">
-
-
-
-                </div>
-
+                <div class="container-fluid" id="tabla_items"></div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" onclick="search_product()"><i class="fas fa-search

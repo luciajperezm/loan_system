@@ -307,7 +307,6 @@ class loanController extends loanModel
         echo json_encode($alert);
     }
 
-
 }
 
 

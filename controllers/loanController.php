@@ -558,6 +558,154 @@ class loanController extends loanModel
 
 
     }
+
+    /*--- PAGINATION LOAN CONTROLLER ---*/
+    public function pagination_loan_controller($page, $n_results, $privilege, $url, $type, $date_init, $date_final)
+    {
+        $page = mainModel::clean_input($page);
+        $n_results = mainModel::clean_input($n_results);
+        $privilege = mainModel::clean_input($privilege);
+
+        $url = mainModel::clean_input($url);
+        $url = SERVER_URL.$url."/";
+
+        $type = mainModel::clean_input($type);
+        $date_init = mainModel::clean_input($date_init);
+        $date_final = mainModel::clean_input($date_final);
+
+        $table = "";
+
+        $page = (isset($page) && $page > 0) ? (int) $page : 1;
+        $init = ($page > 0) ? (($page * $n_results) - $n_results) : 0;
+
+        if($type == "Search"){
+            if(mainModel::verify_input_dates($date_init) || mainModel::verify_input_dates($date_final)){
+                return '
+                <div class="alert alert-danger text-center" role="alert">
+                    <p><i class="fas fa-exclamation-triangle fa-5x"></i></p>
+                    <h4 class="alert-heading">Something went Wrong!</h4>
+                    <p class="mb-0">Sorry, we are unable to show the requested information, The dates are not valid.</p>
+                </div>
+                ';
+                exit();
+            }
+        }
+
+        $fields = "prestamo.prestamo_id, prestamo.prestamo_codigo, prestamo.prestamo_fecha_inicio, prestamo.prestamo_fecha_final, prestamo.prestamo_total, prestamo.prestamo_pagadp, prestamo.prestamo_estado, prestamo.usuario_id, prestamo.cliente_id, cliente.cliente_nombre, cliente.cliente_apellido";
+
+        if($type == "Search" && $date_init != "" && $date_final != ""){
+            $query = "SELECT SQL_CALC_FOUND_ROWS $fields FROM prestamo INNER JOIN cliente ON prestamo.cliente_id = cliente.cliente_id WHERE  (prestamo.prestamo_fecha_inicio BETWEEN '$date_init' AND '$date_final') ORDER BY prestamo.prestamo_fecha_inicio DESC LIMIT $init, $n_results";
+        }else{
+            $query = "SELECT SQL_CALC_FOUND_ROWS $fields FROM prestamo INNER JOIN cliente ON prestamo.cliente_id = cliente.cliente_id WHERE prestamo.prestamo_estado ='$type' ORDER BY prestamo.prestamo_fecha_inicio DESC LIMIT $init, $n_results";
+        }
+
+        $connection = mainModel::connect();
+
+        $data = $connection->query($query);
+        $data = $data->fetchAll();
+
+        /* NUmber of registered data */
+        $total = $connection->query("SELECT FOUND_ROWS()");
+        $total = (int) $total->fetchColumn();
+
+        $N_pages = ceil($total / $n_results);
+
+        $table.='<table class="table table-sm">
+        <thead >
+    <tr class="t-row">
+        <th>#</th>
+        <th class="text-center ">customer</th>
+        <th class="text-center ">Loan date</th>
+        <th class="text-center ">Return Date</th>
+        <th class="text-center ">Type</th>
+        <th class="text-center ">status</th>
+        <th class="text-center ">receipt</th>';
+
+        if($privilege == 1 || $privilege == 2){
+            $table.='<th class="text-center ">Update</th>';
+        }
+        if($privilege == 1){
+            $table.='<th class="text-center ">Delete</th>';
+        }
+
+        $table.=' </tr></thead><tbody class="table__body">';
+
+        if($total >= 1 && $page <= $N_pages){
+            $counter = $init + 1;
+            $reg_init = $init + 1;
+            foreach($data as $rows) {
+                $table.='<tr>
+        <td class="text-center ">'.$counter.'</td>
+        <td class="text-center ">'.$rows['cliente_nombre'].' '.$rows['cliente_apellido'].'</td>
+        <td class="text-center ">'.date("d-m-Y", strtotime($rows['prestamo_fecha_inicio'])).'</td>
+        <td class="text-center ">'.date("d-m-Y", strtotime($rows['prestamo_fecha_final'])).'</td>
+        <td class="text-center ">'.$rows['prestamo_estado'].'</td>';
+
+
+                if($rows['prestamo_pagado'] < $rows['prestamo_total']){
+                    $table.='<td class="text-center "><span class="badge badge-primary">Pending'.CURRENCY
+                        .number_format(($rows['prestamo_total'] - $rows['prestamo_pagado']), 2, '.',',').'</span></td>';
+                }else {
+        $table.='<td class="text-center "><span class="badge badge-light">Canceled</span></td>';}
+
+        $table.='
+            <td class="text-center">
+                <a href="'.SERVER_URL.'receipts/invoice.php?id='.mainModel::encryption($rows['prestamo_id']).'" target="_blank" class="btn btn-danger">
+                    <i class="fas fa-file-invoice"></i>
+                </a>
+            </td>
+        
+        ';
+            if($privilege == 1 || $privilege == 2){
+                if($rows['prestamo_estado'] == "Finished" && $rows['prestamo_pagado'] == $rows['prestamo_total']){
+                    $table.='<td class="text-center ">
+                        <button class="btn 
+                btn-success" disabled>
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </td>';
+                }else {
+                $table.='<td class="text-center ">
+                        <a href="'.SERVER_URL.'reservation-update/'.mainModel::encryption($rows['prestamo_id']).'/" class="btn 
+                btn-success">
+                            <i class="fas fa-sync-alt"></i>
+                        </a>
+                    </td>';}
+            }
+
+                if($privilege == 1){
+                    $table.='<td class="text-center ">
+            <form class="Ajax_Form form-table" action="'.SERVER_URL.'ajax/loanAjax.php" method="post" data-form="delete"
+autocomplete="off"> 
+<input type="hidden" name="loan_code_del" value="'.mainModel::encryption($rows['prestamo_codigo']).'">
+                <button type="submit" class="btn btn-warning">
+                    <i class="far fa-trash-alt"></i>
+                </button>
+            </form>
+        </td>';
+                }
+
+                $table.='</tr>';
+                $counter++;
+            }
+            $reg_final = $counter - 1;
+        }else {
+            if($total >= 1){
+                $table.='<tr><td colspan="9" class="text-center"><a href="'.$url.'" class="btn btn-raised btn-success btn-sm">CLick here to reload list</a></td></tr>';
+            }else {
+                $table.='<tr><td colspan="9" class="text-center">There are no loans registered in the system</td></tr>';
+            }
+        }
+        $table.='</tbody></table>';
+
+        if($total >= 1 && $page <= $N_pages){
+            $table.='<p class="text-right">'.$reg_final.' out of '.$total.' loan(s)</p>';
+            $table.=mainModel::pagination($page, $N_pages, $url, 7);
+        }
+
+        return $table;
+    }
+
 }
 
 

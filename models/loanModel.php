@@ -47,10 +47,10 @@ class loanModel extends mainModel
     /*--- ADD PAYMENT MODEL ---*/
     protected static function add_payment_model($data)
     {
-        $sql = mainModel::connect()->prepare("INSERT INTO pago(pago_total, pago_fecha, prestamo_codigo) VALUES (:Total, :Date, :Loan)");
+        $sql = mainModel::connect()->prepare("INSERT INTO pago(pago_total, pago_fecha, prestamo_codigo) VALUES (:Total, :Date, :Code)");
         $sql->bindParam(":Total", $data['Total']);
         $sql->bindParam(":Date", $data['Date']);
-        $sql->bindParam(":Loan", $data['Loan']);
+        $sql->bindParam(":Code", $data['Code']);
         $sql->execute();
 
         return $sql;

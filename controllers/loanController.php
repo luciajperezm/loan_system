@@ -307,6 +307,257 @@ class loanController extends loanModel
         echo json_encode($alert);
     }
 
+    /*--- DATA LOAN CONTROLLER ---*/
+    public function data_loan_controller($type, $id)
+    {
+        $type = mainModel::clean_input($type);
+        $id = mainModel::decryption($id);
+        $id = mainModel::clean_input($id);
+
+        return loanModel::data_loan_model($type, $id);
+    }
+
+    /*--- ADD LOAN CONTROLLER ---*/
+    public function add_loan_controller()
+    {
+        session_start(['name' => 'LOAN']);
+
+        if($_SESSION['loan_item'] == 0){
+            $alert = [
+                "Alert" => "simple",
+                "Title" => "Something went wrong",
+                "Text" => "You haven't selected a product to make this transaction",
+                "Type" => "error"
+            ];
+            echo json_encode($alert);
+            exit();
+        }
+
+        if(empty($_SESSION['data_customer'])){
+            $alert = [
+                "Alert" => "simple",
+                "Title" => "Something went wrong",
+                "Text" => "You haven't selected a customer to make this transaction",
+                "Type" => "error"
+            ];
+            echo json_encode($alert);
+            exit();
+        }
+
+        // receiving data from the form
+        $date_init = mainModel::clean_input($_POST['loan_date_init_reg']);
+        $time_init = mainModel::clean_input($_POST['loan_time_init_reg']);
+        $date_final = mainModel::clean_input($_POST['loan_date_final_reg']);
+        $time_final = mainModel::clean_input($_POST['loan_time_final_reg']);
+        $status = mainModel::clean_input($_POST['loan_status_reg']);
+        $total_payed = mainModel::clean_input($_POST['loan_payed_reg']);
+        $observation = mainModel::clean_input($_POST['loan_observation_reg']);
+
+        if(mainModel::verify_input_dates($date_init)){
+            $alert = [
+                "Alert" => "simple",
+                "Title" => "Something went wrong",
+                "Text" => "The initial date is not valid",
+                "Type" => "error"
+            ];
+            echo json_encode($alert);
+            exit();
+        }
+
+        if(mainModel::verify_input_data("([0-1][0-9]|[2][0-3])[\:]([0-5][0-9])", $time_init)){
+            $alert = [
+                "Alert" => "simple",
+                "Title" => "Something went wrong",
+                "Text" => "The initial time is not valid",
+                "Type" => "error"
+            ];
+            echo json_encode($alert);
+            exit();
+        }
+
+        if(mainModel::verify_input_dates($date_final)){
+            $alert = [
+                "Alert" => "simple",
+                "Title" => "Something went wrong",
+                "Text" => "The final date is not valid",
+                "Type" => "error"
+            ];
+            echo json_encode($alert);
+            exit();
+        }
+
+        if(mainModel::verify_input_data("([0-1][0-9]|[2][0-3])[\:]([0-5][0-9])", $time_final)){
+            $alert = [
+                "Alert" => "simple",
+                "Title" => "Something went wrong",
+                "Text" => "The time input is not valid",
+                "Type" => "error"
+            ];
+            echo json_encode($alert);
+            exit();
+        }
+
+        if(mainModel::verify_input_data("[0-9.]{1,10}", $total_payed)){
+            $alert = [
+                "Alert" => "simple",
+                "Title" => "Something went wrong",
+                "Text" => "The (Total payed) input is not valid",
+                "Type" => "error"
+            ];
+            echo json_encode($alert);
+            exit();
+        }
+
+        if($observation != ""){
+            if(mainModel::verify_input_data("[a-zA-z0-9áéíóúÁÉÍÓÚñÑ#() ]{1,400}", $observation)){
+                $alert = [
+                    "Alert" => "simple",
+                    "Title" => "Something went wrong",
+                    "Text" => "The (Observation) input is not valid",
+                    "Type" => "error"
+                ];
+                echo json_encode($alert);
+                exit();
+            }
+        }
+
+        if($status =! "Reservation" && $status =! "Loan" && $status =! "Finished"){
+            $alert = [
+                "Alert" => "simple",
+                "Title" => "Something went wrong",
+                "Text" => "The status input is not valid",
+                "Type" => "error"
+            ];
+            echo json_encode($alert);
+            exit();
+        }
+
+        /* making sure dates are right */
+        if(strtotime($date_final) < strtotime($date_init)){
+            $alert = [
+                "Alert" => "simple",
+                "Title" => "Something went wrong",
+                "Text" => "The completion date cannot be set before the beginning of the lease",
+                "Type" => "error"
+            ];
+            echo json_encode($alert);
+            exit();
+        }
+
+        /* formatting data */
+        $total_loan = number_format($_SESSION['loan_total'], 2, '.', '');
+        $total_payed = number_format($total_payed, 2, '.', '');
+        $date_init = date("Y-m-d", strtotime($date_init));
+        $date_final = date("Y-m-d", strtotime($date_final));
+        $time_init = date("h:i a", strtotime($time_init));
+        $time_final = date("h:i a", strtotime($time_final));
+
+        /* generate unique code for loan */
+        $correlative = mainModel::execute_simple_queries("SELECT prestamo_id FROM prestamo");
+        $correlative = ($correlative->rowCount()) + 1;
+
+        $code = mainModel::generate_random_code("LC", 6, $correlative);
+
+        $data_loan_reg = [
+            "Code" => $code,
+            "IDate" => $date_init,
+            "ITime" => $time_init,
+            "FDate" => $date_final,
+            "FTime" => $date_final,
+            "Quantity" => $_SESSION['loan_item'],
+            "Total" => $total_loan,
+            "Payed" => $total_payed,
+            "Status" => $status,
+            "Observation" => $observation,
+            "User" => $_SESSION['id_loan'],
+            "Customer" => $_SESSION['data_customer']['ID']
+        ];
+
+        $add_loan = loanModel::add_loan_model($data_loan_reg);
+
+        if($add_loan->rowCount() != 1) {
+            $alert = [
+                "Alert" => "simple",
+                "Title" => "Something went wrong",
+                "Text" => "We couldn't register the Loan (Error L1)",
+                "Type" => "error"
+            ];
+            echo json_encode($alert);
+            exit();
+        }
+
+        /* adding a payment */
+        if($total_payed > 0){
+            $data_payment_reg = [
+               "Total" => $total_payed,
+                "Date" => $date_init,
+                "Code" => $code
+            ];
+
+            $add_payment = loanModel::add_payment_model($data_payment_reg);
+
+            if($add_payment->rowCount() != 1){
+                loanModel::delete_loan_model($code, "Loan");
+                $alert = [
+                    "Alert" => "simple",
+                    "Title" => "Something went wrong",
+                    "Text" => "We couldn't register the Loan (Error L2)",
+                    "Type" => "error"
+                ];
+                echo json_encode($alert);
+                exit();
+            }
+        }
+
+        /* adding details to the loan */
+        $errors_detail = 0;
+        foreach($_SESSION['data_product'] as $prod){
+            $cost = number_format($prod['Cost'], 2, '.', '');
+            $description = $prod['Code']." - ".$prod['Name'];
+
+            $data_detail_reg = [
+                "Quantity" => $prod['Quantity'],
+                "Format" => $prod['Format'],
+                "Time" => $prod['Time'],
+                "TimeCost" => $prod['Cost'],
+                "Description" => $description,
+                "Code" => $code,
+                "Product" => $prod['ID']
+            ];
+
+            $add_detail = loanModel::add_detail_model($data_detail_reg);
+
+            if($add_detail->rowCount() != 1){
+                $errors_detail = 1;
+                break;
+            }
+        }
+
+        if($errors_detail == 0){
+            unset($_SESSION['data_customer']);
+            unset($_SESSION['data_product']);
+            $alert = [
+                "Alert" => "reload",
+                "Title" => "Done!",
+                "Text" => "The Loan was successfully registered",
+                "Type" => "success"
+            ];
+        }else {
+            loanModel::delete_loan_model($code, "Detail");
+            loanModel::delete_loan_model($code, "Payment");
+            loanModel::delete_loan_model($code, "Loan");
+            $alert = [
+                "Alert" => "simple",
+                "Title" => "Something went wrong",
+                "Text" => "We couldn't register the Loan (Error L3)",
+                "Type" => "error"
+            ];
+        }
+        echo json_encode($alert);
+
+
+
+    }
 }
 
 

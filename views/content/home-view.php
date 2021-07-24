@@ -12,7 +12,7 @@
       $reg_customers = $ins_customer->data_customer_controller("Count",0)
       ?>
     <a href="<?php echo SERVER_URL; ?>customer-search/" class="tile">
-      <div class="tile-tittle">Clientes</div>
+      <div class="tile-tittle">Customers</div>
       <div class="tile-icon">
         <i class="fas fa-users fa-fw"></i>
         <p><?php echo $reg_customers->rowCount();?> Registered</p>
@@ -33,27 +33,34 @@
       </div>
     </a>
       <?php } ?>
+      <?php
+      require_once "./controllers/loanController.php";
+      $ins_loan = new loanController();
+      $reg_loans = $ins_loan->data_loan_controller("Count_Loan",0);
+      $reg_reservation = $ins_loan->data_loan_controller("Count_Reservation",0);
+      $reg_finished = $ins_loan->data_loan_controller("Count_Finished",0);
+      ?>
     <a href="<?php echo SERVER_URL; ?>reservation-reservation/" class="tile">
-      <div class="tile-tittle">Reservaciones</div>
+      <div class="tile-tittle">Reservations</div>
       <div class="tile-icon">
         <i class="far fa-calendar-alt fa-fw"></i>
-        <p>30 Registradas</p>
+        <p><?php echo $reg_reservation->rowCount();?> Registered</p>
       </div>
     </a>
 
     <a href="<?php echo SERVER_URL; ?>reservation-pending/" class="tile">
-      <div class="tile-tittle">Prestamos</div>
+      <div class="tile-tittle">Loans</div>
       <div class="tile-icon">
         <i class="fas fa-hand-holding-usd fa-fw"></i>
-        <p>200 Registrados</p>
+        <p><?php echo $reg_loans->rowCount();?> Registered</p>
       </div>
     </a>
 
     <a href="<?php echo SERVER_URL; ?>reservation-list/" class="tile">
-      <div class="tile-tittle">Finalizados</div>
+      <div class="tile-tittle">Finished Loans</div>
       <div class="tile-icon">
         <i class="fas fa-clipboard-list fa-fw"></i>
-        <p>700 Registrados</p>
+        <p><?php echo $reg_finished->rowCount();?> Registered</p>
       </div>
     </a>
     <?php

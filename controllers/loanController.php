@@ -353,6 +353,17 @@ class loanController extends loanModel
         $total_payed = mainModel::clean_input($_POST['loan_payed_reg']);
         $observation = mainModel::clean_input($_POST['loan_observation_reg']);
 
+        if($date_init == "" || $time_init == "" || $date_final == "" || $time_final == "" || $status == ""){
+            $alert = [
+                "Alert" => "simple",
+                "Title" => "Something went wrong",
+                "Text" => "Some input fields are empty",
+                "Type" => "error"
+            ];
+            echo json_encode($alert);
+            exit();
+        }
+
         if(mainModel::verify_input_dates($date_init)){
             $alert = [
                 "Alert" => "simple",
@@ -421,7 +432,7 @@ class loanController extends loanModel
             }
         }
 
-        if($status =! "Reservation" && $status =! "Loan" && $status =! "Finished"){
+        if($status ==! "Reservation" && $status ==! "Loan" && $status ==! "Finished"){
             $alert = [
                 "Alert" => "simple",
                 "Title" => "Something went wrong",
@@ -463,7 +474,7 @@ class loanController extends loanModel
             "IDate" => $date_init,
             "ITime" => $time_init,
             "FDate" => $date_final,
-            "FTime" => $date_final,
+            "FTime" => $time_final,
             "Quantity" => $_SESSION['loan_item'],
             "Total" => $total_loan,
             "Payed" => $total_payed,
@@ -554,9 +565,6 @@ class loanController extends loanModel
             ];
         }
         echo json_encode($alert);
-
-
-
     }
 
     /*--- PAGINATION LOAN CONTROLLER ---*/
@@ -584,19 +592,18 @@ class loanController extends loanModel
                 <div class="alert alert-danger text-center" role="alert">
                     <p><i class="fas fa-exclamation-triangle fa-5x"></i></p>
                     <h4 class="alert-heading">Something went Wrong!</h4>
-                    <p class="mb-0">Sorry, we are unable to show the requested information, The dates are not valid.</p>
-                </div>
-                ';
+                    <p class="mb-0">Sorry, we are unable to show the requested information.</p>
+                </div>';
                 exit();
             }
         }
 
-        $fields = "prestamo.prestamo_id, prestamo.prestamo_codigo, prestamo.prestamo_fecha_inicio, prestamo.prestamo_fecha_final, prestamo.prestamo_total, prestamo.prestamo_pagadp, prestamo.prestamo_estado, prestamo.usuario_id, prestamo.cliente_id, cliente.cliente_nombre, cliente.cliente_apellido";
+        $fields = "prestamo.prestamo_id,prestamo.prestamo_codigo,prestamo.prestamo_fecha_inicio,prestamo.prestamo_fecha_final,prestamo.prestamo_total,prestamo.prestamo_pagado,prestamo.prestamo_estado,prestamo.usuario_id,prestamo.cliente_id,cliente.cliente_nombre,cliente.cliente_apellido";
 
         if($type == "Search" && $date_init != "" && $date_final != ""){
-            $query = "SELECT SQL_CALC_FOUND_ROWS $fields FROM prestamo INNER JOIN cliente ON prestamo.cliente_id = cliente.cliente_id WHERE  (prestamo.prestamo_fecha_inicio BETWEEN '$date_init' AND '$date_final') ORDER BY prestamo.prestamo_fecha_inicio DESC LIMIT $init, $n_results";
+            $query = "SELECT SQL_CALC_FOUND_ROWS $fields FROM prestamo INNER JOIN cliente ON prestamo.cliente_id = cliente.cliente_id WHERE (prestamo.prestamo_fecha_inicio BETWEEN '$date_init' AND '$date_final') ORDER BY prestamo.prestamo_fecha_inicio DESC LIMIT $init, $n_results";
         }else{
-            $query = "SELECT SQL_CALC_FOUND_ROWS $fields FROM prestamo INNER JOIN cliente ON prestamo.cliente_id = cliente.cliente_id WHERE prestamo.prestamo_estado ='$type' ORDER BY prestamo.prestamo_fecha_inicio DESC LIMIT $init, $n_results";
+            $query = "SELECT SQL_CALC_FOUND_ROWS $fields FROM prestamo INNER JOIN cliente ON prestamo.cliente_id = cliente.cliente_id WHERE prestamo.prestamo_estado = '$type' ORDER BY prestamo.prestamo_fecha_inicio DESC LIMIT $init, $n_results";
         }
 
         $connection = mainModel::connect();
@@ -611,15 +618,15 @@ class loanController extends loanModel
         $N_pages = ceil($total / $n_results);
 
         $table.='<table class="table table-sm">
-        <thead >
-    <tr class="t-row">
-        <th>#</th>
-        <th class="text-center ">customer</th>
-        <th class="text-center ">Loan date</th>
-        <th class="text-center ">Return Date</th>
-        <th class="text-center ">Type</th>
-        <th class="text-center ">status</th>
-        <th class="text-center ">receipt</th>';
+        <thead>
+        <tr class="t-row">
+            <th>#</th>
+            <th class="text-center ">Cliente</th>
+            <th class="text-center ">Loan date</th>
+            <th class="text-center ">fecha de entrega</th>
+            <th class="text-center ">tipo</th>
+            <th class="text-center ">status</th>
+            <th class="text-center ">factura</th>';
 
         if($privilege == 1 || $privilege == 2){
             $table.='<th class="text-center ">Update</th>';
@@ -637,41 +644,51 @@ class loanController extends loanModel
                 $table.='<tr>
         <td class="text-center ">'.$counter.'</td>
         <td class="text-center ">'.$rows['cliente_nombre'].' '.$rows['cliente_apellido'].'</td>
-        <td class="text-center ">'.date("d-m-Y", strtotime($rows['prestamo_fecha_inicio'])).'</td>
-        <td class="text-center ">'.date("d-m-Y", strtotime($rows['prestamo_fecha_final'])).'</td>
-        <td class="text-center ">'.$rows['prestamo_estado'].'</td>';
-
-
-                if($rows['prestamo_pagado'] < $rows['prestamo_total']){
-                    $table.='<td class="text-center "><span class="badge badge-primary">Pending'.CURRENCY
-                        .number_format(($rows['prestamo_total'] - $rows['prestamo_pagado']), 2, '.',',').'</span></td>';
-                }else {
-        $table.='<td class="text-center "><span class="badge badge-light">Canceled</span></td>';}
-
-        $table.='
-            <td class="text-center">
-                <a href="'.SERVER_URL.'receipts/invoice.php?id='.mainModel::encryption($rows['prestamo_id']).'" target="_blank" class="btn btn-danger">
-                    <i class="fas fa-file-invoice"></i>
-                </a>
-            </td>
+        <td class="text-center ">'.date("d-m-Y",strtotime($rows['prestamo_fecha_inicio'])).'</td>
+        <td class="text-center ">'.date("d-m-Y",strtotime($rows['prestamo_fecha_final'])).'</td>';
         
-        ';
-            if($privilege == 1 || $privilege == 2){
-                if($rows['prestamo_estado'] == "Finished" && $rows['prestamo_pagado'] == $rows['prestamo_total']){
-                    $table.='<td class="text-center ">
-                        <button class="btn 
-                btn-success" disabled>
-                            <i class="fas fa-sync-alt"></i>
-                        </button>
-                    </td>';
-                }else {
+        if($rows['prestamo_estado'] == "Reservation"){
+            $table.='<td class="text-center "><span class="badge badge-secondary">'.$rows['prestamo_estado'].'</span></td>';
+        }elseif($rows['prestamo_estado'] == "Loan"){
+            $table.='<td class="text-center "><span class="badge badge-primary">'.$rows['prestamo_estado'].'</span></td>';
+        }elseif($rows['prestamo_estado'] == "Finished"){
+            $table.='<td class="text-center "><span class="badge badge-success">'.$rows['prestamo_estado'].'</span></td>';
+        }
+
+
+        if($rows['prestamo_pagado'] < $rows['prestamo_total']){
+            $table.='<td class="text-center "><span class="badge badge-warning">Pending: '.CURRENCY.number_format(
+                ($rows['prestamo_total'] - $rows['prestamo_pagado']),
+                    2, '.', ','
+                ).'</span></td>';
+        }else{
+            $table.='<td class="text-center "><span class="badge badge-info">Payed</span></td>';
+        }
+
+        $table.='<td class="text-center">
+            <a href="'.SERVER_URL.'receipts/invoice.php?id='.mainModel::encryption($rows['prestamo_id']).'" class="btn btn-danger" target="_blank">
+                <i class="fas fa-file-invoice"></i>
+            </a>
+        </td>';
+
+        if($privilege == 1 || $privilege == 2){
+            if($rows['prestamo_estado'] == "Finished" && $rows['prestamo_pagado'] == $rows['prestamo_total']){
                 $table.='<td class="text-center ">
-                        <a href="'.SERVER_URL.'reservation-update/'.mainModel::encryption($rows['prestamo_id']).'/" class="btn 
+                    <button class="btn 
+                btn-success" disabled>
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </td>';
+            }else{
+                $table.='<td class="text-center ">
+                    <a href="'.SERVER_URL.'reservation-update/'.mainModel::encryption($rows['prestamo_id']).'/" class="btn 
                 btn-success">
-                            <i class="fas fa-sync-alt"></i>
-                        </a>
-                    </td>';}
+                        <i class="fas fa-sync-alt"></i>
+                    </a>
+                </td>';
             }
+
+        }
 
                 if($privilege == 1){
                     $table.='<td class="text-center ">
@@ -705,6 +722,7 @@ autocomplete="off">
 
         return $table;
     }
+
 
 }
 

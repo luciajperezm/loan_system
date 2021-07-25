@@ -152,7 +152,6 @@
                     <div class="form-group">
                         <label for="loan_status" class="bmd-label-floating">Status</label>
                         <select class="form-control" name="loan_status_reg" id="loan_status">
-                            <option value="" selected="">Choose an option</option>
                             <option value="Reservation">Reservation</option>
                             <option value="Loan">Loan</option>
                             <option value="Finished">Finished</option>

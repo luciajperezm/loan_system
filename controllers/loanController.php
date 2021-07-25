@@ -621,12 +621,12 @@ class loanController extends loanModel
         <thead>
         <tr class="t-row">
             <th>#</th>
-            <th class="text-center ">Cliente</th>
+            <th class="text-center ">Customer</th>
             <th class="text-center ">Loan date</th>
-            <th class="text-center ">fecha de entrega</th>
-            <th class="text-center ">tipo</th>
+            <th class="text-center ">return date</th>
+            <th class="text-center ">type</th>
             <th class="text-center ">status</th>
-            <th class="text-center ">factura</th>';
+            <th class="text-center ">receipt</th>';
 
         if($privilege == 1 || $privilege == 2){
             $table.='<th class="text-center ">Update</th>';

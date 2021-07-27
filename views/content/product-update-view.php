@@ -1,3 +1,9 @@
+<?php
+if($_SESSION['privilege_loan'] < 1 || $_SESSION['privilege_loan'] > 2){
+    echo $ins_logout->force_logout_controller();
+    exit();
+}
+?>
 <h2>Update Product</h2>
 <p>Here you can update the information of the registered Products in the company. Make sure the information you
   introduce is correct. </p>

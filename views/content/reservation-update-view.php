@@ -1,3 +1,9 @@
+<?php
+if($_SESSION['privilege_loan'] < 1 || $_SESSION['privilege_loan'] > 2){
+    echo $ins_logout->force_logout_controller();
+    exit();
+}
+?>
 <h2>Update Loan</h2>
 <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad dolore doloremque error explicabo fuga in ipsa
     labore laborum libero minima molestiae</p>
@@ -15,19 +21,48 @@
     ?>reservation-search/">Search Loans</a></button>
 </div>
 <div class="container-fluid">
+    <?php
+    require_once "./controllers/loanController.php";
+    $ins_loan = new loanController();
+    $data_loan = $ins_loan->data_loan_controller("Unique", $page[1]);
 
+    if($data_loan->rowCount() == 1){
+    $fields = $data_loan->fetch();
+
+    if($fields['prestamo_estado'] == "Finished" && $fields['prestamo_pagado'] == $fields['prestamo_total']){
+    ?>
+        <div class="alert alert-danger text-center" role="alert">
+          <p><i class="fas fa-exclamation-triangle fa-5x"></i></p>
+          <h4 class="alert-heading">Wait a minute!</h4>
+          <p class="mb-0">You can't update this loan because it has already been paid</p>
+        </div>
+    <?php }else{ ?>
     <div class="container-fluid form-neon">
+
+      <?php if($fields['prestamo_pagado'] != $fields['prestamo_total']){ ?>
         <div class="container-fluid">
             <p class="text-center"><strong>AGREGAR NUEVO PAGO A ESTE PRÉSTAMO</strong></p>
-            <p class="text-center">Este préstamo presenta un pago pendiente por la cantidad de <strong>$50</strong>, puede agregar un pago a este préstamo haciendo clic en el siguiente botón.</p>
+            <p class="text-center">Este préstamo presenta un pago pendiente por la cantidad de <strong><?php echo
+                        CURRENCY.number_format(($fields['prestamo_total'] - $fields['prestamo_pagado']), 2, '.', '') ?>
+            </strong>, puede agregar un pago a este préstamo haciendo clic en el siguiente botón.</p>
             <p class="text-center">
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#ModalPago"><i class="far fa-money-bill-alt"></i> &nbsp; Agregar pago</button>
             </p>
         </div>
+      <?php } ?>
+
+
         <div class="container-fluid">
+            <?php
+            require_once "./controllers/customerController.php";
+            $ins_customer = new customerController();
+            $data_customer = $ins_customer->data_customer_controller("Unique", $ins_logout->encryption
+            ($fields['cliente_id']));
+            $data_customer = $data_customer->fetch();
+            ?>
             <div>
                 <span class="roboto-medium">CLIENTE:</span>
-                &nbsp; Carlos Alfaro
+                &nbsp; <?php echo $data_customer['cliente_nombre']." ".$data_customer['cliente_apellido']; ?>
             </div>
             <div class="table-responsive">
                 <table class="table table-light table-sm">
@@ -41,27 +76,21 @@
                     </tr>
                     </thead>
                     <tbody>
+                    <?php $data_detail = $ins_loan->data_loan_controller("Detail", $ins_logout->encryption
+                    ($fields['prestamo_codigo']));
+                    $data_detail = $data_detail->fetchAll();
+                    foreach($data_detail as $det){
+                      $subtotal = $det['detalle_cantidad']*($det['detalle_costo_tiempo'] * $det['detalle_tiempo']);
+                      $subtotal = number_format($subtotal, 2, '.', '');
+                    ?>
                     <tr class="text-center" >
-                        <td>Silla plastica</td>
-                        <td>7</td>
-                        <td>Hora</td>
-                        <td>$5.00</td>
-                        <td>$35.00</td>
+                        <td><?php echo $det['detalle_descripcion']; ?></td>
+                        <td><?php echo $det['detalle_cantidad']; ?></td>
+                        <td><?php echo $det['detalle_tiempo']." ".$det['detalle_formato']; ?></td>
+                        <td><?php echo CURRENCY.$det['detalle_costo_tiempo']." x 1 ".$det['detalle_formato']; ?></td>
+                        <td><?php echo CURRENCY.$subtotal; ?></td>
                     </tr>
-                    <tr class="text-center" >
-                        <td>Silla metalica</td>
-                        <td>9</td>
-                        <td>Día</td>
-                        <td>$5.00</td>
-                        <td>$45.00</td>
-                    </tr>
-                    <tr class="text-center" >
-                        <td>Mesa plastica</td>
-                        <td>5</td>
-                        <td>Evento</td>
-                        <td>$10.00</td>
-                        <td>$50.00</td>
-                    </tr>
+                    <?php } ?>
                     </tbody>
                 </table>
             </div>
@@ -147,10 +176,13 @@
         </form>
     </div>
 
-    <!-- MODAL PAGOS -->
+
+
+    <!-- MODAL PAYMENTS -->
     <div class="modal fade" id="ModalPago" tabindex="-1" role="dialog" aria-labelledby="ModalPago" aria-hidden="true">
         <div class="modal-dialog" role="document">
-            <form class="modal-content">
+            <form class="Ajax_Form modal-content" action="<?php echo SERVER_URL; ?>ajax/loanAjax.php" method="post" data-form="save"
+                  autocomplete="off">
                 <div class="modal-header">
                     <h5 class="modal-title" id="ModalPago">Agregar pago</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -167,17 +199,35 @@
                             </tr>
                             </thead>
                             <tbody>
+                            <?php
+                            $data_payment = $ins_loan->data_loan_controller("Payment", $ins_logout->encryption
+                            ($fields['prestamo_codigo']));
+
+                            if($data_payment->rowCount() > 0){
+                                $data_payment = $data_payment->fetchAll();
+                                foreach($data_payment as $rows){
+                                    echo '
+                                    <tr class="text-center">
+                                        <td>'.date("d-m-Y", strtotime($rows['pago_fecha'])).'</td>
+                                        <td>'.CURRENCY.$rows['pago_total'].'</td>
+                                    </tr>
+                                    ';
+                                }
+                            }else{
+                            ?>
                             <tr class="text-center">
-                                <td>Fecha</td>
-                                <td>Monto</td>
+                                <td colspan="2">No payments registered</td>
                             </tr>
+                            <?php } ?>
                             </tbody>
                         </table>
                     </div>
                     <div class="container-fluid">
-                        <input type="hidden" name="pago_codigo_reg">
+                        <input type="hidden" name="pago_codigo_reg" value="<?php $ins_logout->encryption
+                        ($fields['prestamo_codigo']); ?>">
                         <div class="form-group">
-                            <label for="pago_monto_reg" class="bmd-label-floating">Monto en $</label>
+                            <label for="pago_monto_reg" class="bmd-label-floating">Monto en <?php echo CURRENCY;
+                            ?></label>
                             <input type="text" pattern="[0-9.]{1,10}" class="form-control" name="pago_monto_reg" id="pago_monto_reg" maxlength="10" required="">
                         </div>
                     </div>
@@ -189,9 +239,17 @@
             </form>
         </div>
     </div>
+
+    <?php
+        }
+    }else{
+      ?>
     <div class="alert alert-danger text-center" role="alert">
         <p><i class="fas fa-exclamation-triangle fa-5x"></i></p>
         <h4 class="alert-heading">¡Ocurrió un error inesperado!</h4>
         <p class="mb-0">Lo sentimos, no podemos mostrar la información solicitada debido a un error.</p>
     </div>
+    <?php } ?>
+
+
 </div>

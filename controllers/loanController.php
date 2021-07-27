@@ -723,6 +723,91 @@ autocomplete="off">
         return $table;
     }
 
+    public function delete_loan_controller()
+    {
+        $code = mainModel::decryption($_POST['loan_code_del']);
+        $code = mainModel::clean_input($code);
+
+        $check_loan = mainModel::execute_simple_queries("SELECT prestamo_codigo FROM prestamo WHERE prestamo_codigo='$code'");
+
+        if($check_loan->rowCount() <= 0){
+            $alert = [
+                "Alert" => "simple",
+                "Title" => "Something went wrong",
+                "Text" => "We couldn't find this loan in the data base",
+                "Type" => "error"
+            ];
+            echo json_encode($alert);
+            exit();
+        }
+
+        /*checking user privilege*/
+        session_start(['name' => 'LOAN']);
+        if($_SESSION['privilege_loan'] != 1){
+            $alert = [
+                "Alert" => "simple",
+                "Title" => "Something went wrong",
+                "Text" => "You are not allowed to do this",
+                "Type" => "error"
+            ];
+            echo json_encode($alert);
+            exit();
+        }
+
+        $check_payment = mainModel::execute_simple_queries("SELECT prestamo_codigo FROM pago WHERE prestamo_codigo='$code'");
+        $check_payment = $check_payment->rowCount();
+
+        if($check_payment > 0){
+            $del_payment = loanModel::delete_loan_model($code, "Payment");
+            if($del_payment->rowCount() != $check_payment){
+                $alert = [
+                    "Alert" => "simple",
+                    "Title" => "Something went wrong",
+                    "Text" => "We couldn't delete this loan (Error Payment)",
+                    "Type" => "error"
+                ];
+                echo json_encode($alert);
+                exit();
+            }
+        }
+
+        $check_detail = mainModel::execute_simple_queries("SELECT prestamo_codigo FROM detalle WHERE prestamo_codigo='$code'");
+        $check_detail = $check_detail->rowCount();
+
+        if($check_detail > 0){
+            $del_detail = loanModel::delete_loan_model($code, "Detail");
+            if($del_detail->rowCount() != $check_detail){
+                $alert = [
+                    "Alert" => "simple",
+                    "Title" => "Something went wrong",
+                    "Text" => "We couldn't delete this loan (Error Detail)",
+                    "Type" => "error"
+                ];
+                echo json_encode($alert);
+                exit();
+            }
+        }
+
+        $del_loan = loanModel::delete_loan_model($code, "Loan");
+        if($del_loan->rowCount() == 1){
+            $alert = [
+                "Alert" => "reload",
+                "Title" => "Done",
+                "Text" => "The Loan was successfully deleted",
+                "Type" => "success"
+            ];
+        }else{
+            $alert = [
+                "Alert" => "simple",
+                "Title" => "Something went wrong",
+                "Text" => "We couldn't delete this loan (Error Loan)",
+                "Type" => "error"
+            ];
+        }
+        echo json_encode($alert);
+        exit();
+    }
+
 
 }
 

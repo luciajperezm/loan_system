@@ -592,7 +592,7 @@ class loanController extends loanModel
                 <div class="alert alert-danger text-center" role="alert">
                     <p><i class="fas fa-exclamation-triangle fa-5x"></i></p>
                     <h4 class="alert-heading">Something went Wrong!</h4>
-                    <p class="mb-0">Sorry, we are unable to show the requested information.</p>
+                    <p class="mb-0">Sorry, we are unable to show the requested information. The Date is not valid</p>
                 </div>';
                 exit();
             }

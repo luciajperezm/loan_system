@@ -12,106 +12,61 @@
     <button class="btn btn__cta"><i class="fas fa-calendar ic"></i><a href="<?php echo SERVER_URL;?>reservation-reservation
     /">Reservations</a></button>
 </div>
+<?php
+if(!isset($_SESSION['date_init_loan']) && empty($_SESSION['date_init_loan']) && !isset($_SESSION['date_final_loan']) &&
+    empty($_SESSION['date_final_loan'])){
+?>
 <div class="container-fluid">
-    <form class="form-neon" action="">
-      <input type="hidden" name="module" value="user">
-        <div class="container-fluid">
-            <div class="row justify-content-md-center">
-                <div class="col-12 col-md-4">
-                    <div class="form-group">
-                        <label for="search_init_loan" >Fecha inicial (día/mes/año)</label>
-                        <input type="date" class="form-control" name="search_init_loan" id="search_init_loan" maxlength="30">
-                    </div>
-                </div>
-                <div class="col-12 col-md-4">
-                    <div class="form-group">
-                        <label for="search_final_loan" >Fecha final (día/mes/año)</label>
-                        <input type="date" class="form-control" name="search_final_loan" id="search_final_loan"
-                               maxlength="30">
-                    </div>
-                </div>
-                <div class="col-12">
-                    <p class="text-center" style="margin-top: 40px;">
-                        <button type="submit" class="btn btn-raised btn-info"><i class="fas fa-search"></i> &nbsp; BUSCAR</button>
-                    </p>
-                </div>
-            </div>
-        </div>
-    </form>
-</div>
+				<form class="Ajax_Form form-neon" action="<?php echo SERVER_URL;?>ajax/searchAjax.php" method="post" autocomplete="off">
+          <input type="hidden" name="module" value="loan">
+					<div class="container-fluid">
+						<div class="row justify-content-md-center">
+							<div class="col-12 col-md-4">
+								<div class="form-group">
+									<label for="date_init" >Fecha inicial (día/mes/año)</label>
+									<input type="date" class="form-control" name="date_init" id="date_init" maxlength="30">
+								</div>
+							</div>
+							<div class="col-12 col-md-4">
+								<div class="form-group">
+									<label for="date_final" >Fecha final (día/mes/año)</label>
+									<input type="date" class="form-control" name="date_final" id="date_final" maxlength="30">
+								</div>
+							</div>
+							<div class="col-12">
+								<p class="text-center" style="margin-top: 40px;">
+									<button type="submit" class="btn btn-raised btn-info"><i class="fas fa-search"></i> &nbsp;
+                    SEARCH</button>
+								</p>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+<?php }else {?>
 <div class="container-fluid">
-    <form action="">
-      <input type="hidden" name="module" value="user">
-        <input type="hidden" name="eliminar_busqueda_prestamo" value="eliminar">
-        <div class="container-fluid">
-            <div class="row justify-content-md-center">
-                <div class="col-12 col-md-6">
-                    <p class="text-center" style="font-size: 20px;">
-                        Fecha de busqueda: <strong>01/01/2020 &nbsp; a &nbsp; 01/01/2020</strong>
-                    </p>
-                </div>
-                <div class="col-12">
-                    <p class="text-center" style="margin-top: 20px;">
-                        <button type="submit" class="btn btn-raised btn-danger"><i class="far fa-trash-alt"></i> &nbsp; ELIMINAR BÚSQUEDA</button>
-                    </p>
-                </div>
-            </div>
+    <form class="Ajax_Form" action="<?php echo SERVER_URL;?>ajax/searchAjax.php" method="post" autocomplete="off" data-form="search">
+        <input type="hidden" name="module" value="loan">
+            <input type="hidden" name="delete_search" value="delete">
+            <div class="container-fluid">
+                <div class="row justify-content-md-center">
+                    <div class="col-12 col-md-6">
+                        <p class="text-center" style="font-size: 20px;">
+                          Fecha de busqueda: <strong>01/01/2020 &nbsp; a &nbsp; 01/01/2020</strong>
+                        </p>
+                    </div>
+                    <div class="col-12">
+                        <p class="text-center" style="margin-top: 20px;">
+                          <button type="submit" class="btn btn-raised btn-danger"><i class="far fa-trash-alt"></i>
+                            &nbsp; DELETE SEARCH</button>
+                        </p>
+                    </div>
+              </div>
         </div>
-    </form>
+  </form>
 </div>
 
-<table class="table table-sm">
-    <thead >
-    <tr class="t-row">
-        <th>#</th>
-        <th class="text-center ">Cliente</th>
-        <th class="text-center ">Loan date</th>
-        <th class="text-center ">fecha de entrega</th>
-        <th class="text-center ">tipo</th>
-        <th class="text-center ">status</th>
-        <th class="text-center ">factura</th>
-        <th class="text-center ">Update</th>
-        <th class="text-center ">Delete</th>
-    </tr>
-    </thead>
-    <tbody class="table__body">
-    <tr>
-        <td class="text-center ">1</td>
-        <td class="text-center ">Lucia Perez</td>
-        <td class="text-center ">2017/10/8</td>
-        <td class="text-center ">2017/10/8</td>
-        <td class="text-center "><span class="badge badge-dark">Finished</span></td>
-        <td class="text-center "><span class="badge badge-success">Done</span></td>
-        <td class="text-center">
-            <button type="button" class="btn btn-danger">
-                <i class="fas fa-file-invoice"></i>
-            </button>
-        </td>
-        <td class="text-center ">
-            <a href="<?php echo SERVER_URL;?>reservation-update/" class="btn btn-success">
-                <i class="fas fa-sync-alt"></i>
-            </a>
-        </td>
-        <td class="text-center ">
-            <form action="" class="form-table">
-                <button type="button" class="btn btn-warning">
-                    <i class="far fa-trash-alt"></i>
-                </button>
-            </form>
-        </td>
-    </tr>
-    </tbody>
-</table>
-<nav aria-label="Page navigation example">
-    <ul class="pagination justify-content-center">
-        <li class="page-item disabled">
-            <a class="page-link" href="#" tabindex="-1">Previous</a>
-        </li>
-        <li class="page-item"><a class="page-link" href="#">1</a></li>
-        <li class="page-item"><a class="page-link" href="#">2</a></li>
-        <li class="page-item"><a class="page-link" href="#">3</a></li>
-        <li class="page-item">
-            <a class="page-link" href="#">Next</a>
-        </li>
-    </ul>
-</nav>
+<?php require_once "./controllers/loanController.php";
+$ins_loan = new loanController();
+echo $ins_loan->pagination_loan_controller($page[1], 15, $_SESSION['privilege_loan'], $page[0], "Search", $_SESSION['date_init_loan'], $_SESSION['date_final_loan']);?>
+<?php } ?>

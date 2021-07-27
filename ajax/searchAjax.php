@@ -2,14 +2,15 @@
     session_start(['name' => 'LOAN']);
     require_once "../config/APP.php";
     
-    if(isset($_POST['search_init']) || isset($_POST['delete_search']) || isset($_POST['search_init_loan']) || isset($_POST['search_final_loan'])){
+    if(isset($_POST['search_init']) || isset($_POST['delete_search']) || isset($_POST['date_init']) || isset($_POST['date_final'])){
+
+        /* variable that contains urls */
         $data_url = [
             "user"=>"user-search",
             "customer"=>"customer-search",
             "product"=>"product-search",
             "loan"=>"reservation-search"
         ];
-
 
 
         if(isset($_POST['module'])){
@@ -28,35 +29,38 @@
             $alert = [
                 "Alert" => "simple",
                 "Title" => "Something went wrong",
-                "Text" => "We couldn't search this data",
+                "Text" => "We couldn't search this data due to a configuration error",
                 "Type" => "error"
             ];
             echo json_encode($alert);
             exit();
-        }
+        } //
+
+
 
         if($module == "loan"){
-            $date_init = "date_init".$module;
-            $date_final = "date_final".$module;
+            $date_init = "date_init_".$module;
+            $date_final = "date_final_".$module;
 
             /* initialize search */
-            if(isset($_POST['search_init_loan']) || isset($_POST['search_final_loan'])){
+            if(isset($_POST['date_init']) || isset($_POST['date_final'])){
 
-                if($_POST['search_init_loan'] == "" || $_POST['search_final_loan'] == ""){
+                if($_POST['date_init'] == "" || $_POST['date_final'] == ""){
                     $alert = [
                         "Alert" => "simple",
                         "Title" => "Something went wrong",
-                        "Text" => "Some input fields are empty",
+                        "Text" => "Some input fields are empty (Error D1)",
                         "Type" => "error"
                     ];
                     echo json_encode($alert);
                     exit();
                 }
 
-                $_SESSION[$date_init] = $_POST['search_init_loan'];
-                $_SESSION[$date_final] = $_POST['search_final_loan'];
+                $_SESSION[$date_init] = $_POST['date_init'];
+                $_SESSION[$date_final] = $_POST['date_final'];
             }
 
+            // delete search
             if(isset($_POST['delete_search'])){
                 unset($_SESSION[$date_init]);
                 unset($_SESSION[$date_final]);

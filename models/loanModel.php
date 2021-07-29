@@ -30,12 +30,12 @@ class loanModel extends mainModel
     /*--- ADD DETAIL MODEL ---*/
     protected static function add_detail_model($data)
     {
-        $sql = mainModel::connect()->prepare("INSERT INTO detalle(detalle_cantidad, detalle_formato, detalle_tiempo, detalle_costo_tiempo, detalle_descripcion, prestamo_codigo, item_id) VALUES (:Quantity, :Format, :Time, :TimeCost, :Description, :Code, :Product)");
+        $sql = mainModel::connect()->prepare("INSERT INTO detalle(detalle_cantidad, detalle_formato, detalle_tiempo, detalle_costo_tiempo, detalle_descripcion, prestamo_codigo, item_id) VALUES (:Quantity, :Format, :Time, :Cost, :Description, :Code, :Product)");
 
         $sql->bindParam(":Quantity", $data['Quantity']);
         $sql->bindParam(":Format", $data['Format']);
         $sql->bindParam(":Time", $data['Time']);
-        $sql->bindParam(":TimeCost", $data['TimeCost']);
+        $sql->bindParam(":Cost", $data['Cost']);
         $sql->bindParam(":Description", $data['Description']);
         $sql->bindParam(":Code", $data['Code']);
         $sql->bindParam(":Product", $data['Product']);
@@ -79,11 +79,11 @@ class loanModel extends mainModel
             $sql = mainModel::connect()->prepare("SELECT * FROM prestamo WHERE prestamo_id=:ID");
             $sql->bindParam(":ID", $id);
         }elseif($type == "Count_Reservation"){
-            $sql = mainModel::connect()->prepare("SELECT prestamo_id FROM prestamo WHERE prestamo_id='Reservation'");
+            $sql = mainModel::connect()->prepare("SELECT prestamo_id FROM prestamo WHERE prestamo_estado='Reservation'");
         }elseif($type == "Count_Loan"){
-            $sql = mainModel::connect()->prepare("SELECT prestamo_id FROM prestamo WHERE prestamo_id='Loan'");
+            $sql = mainModel::connect()->prepare("SELECT prestamo_id FROM prestamo WHERE prestamo_estado='Loan'");
         }elseif($type == "Count_Finished"){
-            $sql = mainModel::connect()->prepare("SELECT prestamo_id FROM prestamo WHERE prestamo_id='Finished'");
+            $sql = mainModel::connect()->prepare("SELECT prestamo_id FROM prestamo WHERE prestamo_estado='Finished'");
         }elseif($type == "Count"){
             $sql = mainModel::connect()->prepare("SELECT prestamo_id FROM prestamo");
         }elseif($type == "Detail"){

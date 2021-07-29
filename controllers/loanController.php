@@ -320,8 +320,10 @@ class loanController extends loanModel
     /*--- ADD LOAN CONTROLLER ---*/
     public function add_loan_controller()
     {
+        /*starting sessino */
         session_start(['name' => 'LOAN']);
 
+        /* making sure we have items selected */
         if($_SESSION['loan_item'] == 0){
             $alert = [
                 "Alert" => "simple",
@@ -332,7 +334,7 @@ class loanController extends loanModel
             echo json_encode($alert);
             exit();
         }
-
+        /* making sure we have a customer selected */
         if(empty($_SESSION['data_customer'])){
             $alert = [
                 "Alert" => "simple",
@@ -432,7 +434,7 @@ class loanController extends loanModel
             }
         }
 
-        if($status ==! "Reservation" && $status ==! "Loan" && $status ==! "Finished"){
+        if($status =! "Reservation" && $status =! "Loan" && $status =! "Finished"){
             $alert = [
                 "Alert" => "simple",
                 "Title" => "Something went wrong",
@@ -448,7 +450,7 @@ class loanController extends loanModel
             $alert = [
                 "Alert" => "simple",
                 "Title" => "Something went wrong",
-                "Text" => "The completion date cannot be set before the beginning of the lease",
+                "Text" => "The return date cannot be set before the beginning of the lease",
                 "Type" => "error"
             ];
             echo json_encode($alert);
@@ -530,7 +532,7 @@ class loanController extends loanModel
                 "Quantity" => $prod['Quantity'],
                 "Format" => $prod['Format'],
                 "Time" => $prod['Time'],
-                "TimeCost" => $prod['Cost'],
+                "Cost" => $prod['Cost'],
                 "Description" => $description,
                 "Code" => $code,
                 "Product" => $prod['ID']
@@ -723,6 +725,7 @@ autocomplete="off">
         return $table;
     }
 
+    /*--- DELETE LOAN CONTROLLER ---*/
     public function delete_loan_controller()
     {
         $code = mainModel::decryption($_POST['loan_code_del']);
@@ -801,6 +804,106 @@ autocomplete="off">
                 "Alert" => "simple",
                 "Title" => "Something went wrong",
                 "Text" => "We couldn't delete this loan (Error Loan)",
+                "Type" => "error"
+            ];
+        }
+        echo json_encode($alert);
+        exit();
+    }
+
+    /*--- ADD PAYMENT TO LOAN CONTROLLER ---*/
+    public function add_payment_controller()
+    {
+        $code = mainModel::decryption($_POST['payment_code_reg']);
+        $code = mainModel::clean_input($code);
+
+        $amount = mainModel::clean_input($_POST['payment_amount_reg']);
+        $amount = number_format($amount, 2, '.', '');
+
+        if($amount <= 0){
+            $alert = [
+                "Alert" => "simple",
+                "Title" => "Something went wrong",
+                "Text" => "The payment must be greater than zero",
+                "Type" => "error"
+            ];
+            echo json_encode($alert);
+            exit();
+        }
+
+        $data_payment = mainModel::execute_simple_queries("SELECT * FROM prestamo WHERE prestamo_codigo='$code'");
+
+        if($data_payment->rowCount() <= 0){
+            $alert = [
+                "Alert" => "simple",
+                "Title" => "Something went wrong",
+                "Text" => "We couldn't find this loan in the data base",
+                "Type" => "error"
+            ];
+            echo json_encode($alert);
+            exit();
+        }else {
+            $data_payment = $data_payment->fetch();
+        }
+
+
+        $pending = $data_payment['prestamo_total'] - $data_payment['prestamo_pagado'];
+        $pending = number_format($pending,2,'.', '');
+
+        if($amount > $pending){
+            $alert = [
+                "Alert" => "simple",
+                "Title" => "Something went wrong",
+                "Text" => "This payment is greater than the amount owed",
+                "Type" => "error"
+            ];
+            echo json_encode($alert);
+            exit();
+        }
+
+        $total_payed = number_format(($_POST['payment_amount_reg'] + $data_payment['prestamo_pagado']), 2, '.', '');
+        $date = date("Y-m-d");
+
+        $data_payment_reg = [
+            "Total" => $amount,
+            "Date" => $date,
+            "Code" => $code
+        ];
+
+        $add_payment = loanModel::add_payment_model($data_payment_reg);
+
+        if($add_payment->rowCount() == 1){
+
+            $data_payment_up = [
+                "Type" =>"Payment",
+                "Amount" => $total_payed,
+                "Code" => $code
+            ];
+
+            if(loanModel::update_loan_model($data_payment_up)){
+                $alert = [
+                    "Alert" => "reload",
+                    "Title" => "Done!",
+                    "Text" => "The ".CURRENCY.$amount." payment was added successfully",
+                    "Type" => "success"
+                ];
+            }else{
+                loanModel::delete_loan_model($code, "Payment");
+                $alert = [
+                    "Alert" => "simple",
+                    "Title" => "Something went wrong",
+                    "Text" => "We couldn't add this payment",
+                    "Type" => "error"
+                ];
+            }
+            echo json_encode($alert);
+            exit();
+
+        }else{
+            $alert = [
+                "Alert" => "simple",
+                "Title" => "Something went wrong",
+                "Text" => "We couldn't add this payment",
                 "Type" => "error"
             ];
         }

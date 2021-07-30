@@ -1,10 +1,10 @@
 <nav id="sidebar">
     <div class="sidebar-header">
-        <h3>Lorem Ipsum</h3>
+      <h4>Management System</h4>
     </div>
     <div class="user__profile">
         <div class="side1">
-            <i class="fas fa-user-circle fa-3x"></i>
+            <i class="fas fa-id-card-alt fa-3x user-badge"></i>
         </div>
         <div class="side2">
             <span class="user__profile-name"><?php echo $_SESSION['name_loan']." ".$_SESSION['last_name_loan'];?></span><br>

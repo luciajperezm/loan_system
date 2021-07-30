@@ -100,10 +100,10 @@
     <?php } ?>
     </tbody>
 </table>
-<form class="Ajax_Form" action="<?php echo SERVER_URL; ?>ajax/loanAjax.php" method="post" data-form="save"
+<form class="Ajax_Form" action="<?php echo SERVER_URL; ?>ajax/loanAjax.php" method="POST" data-form="save"
       autocomplete="off">
 
-  <fieldset>
+    <fieldset>
         <legend><i class="far fa-clock"></i> &nbsp;Date and time of Loan</legend>
         <div class="container-fluid">
             <div class="row">
@@ -152,6 +152,7 @@
                     <div class="form-group">
                         <label for="loan_status" class="bmd-label-floating">Status</label>
                         <select class="form-control" name="loan_status_reg" id="loan_status">
+                            <option value="" selected="">Choose an option</option>
                             <option value="Reservation">Reservation</option>
                             <option value="Loan">Loan</option>
                             <option value="Finished">Finished</option>
@@ -160,14 +161,14 @@
                 </div>
                 <div class="col-12 col-md-4">
                     <div class="form-group">
-                        <label for="loan_total" class="bmd-label-floating">Total amount to pay (<?php echo CURRENCY; ?>)</label>
+                        <label for="loan_total" class="bmd-label-floating">Total amount to pay (<?php echo CURRENCY;?>)</label>
                         <input type="text" pattern="[0-9.]{1,10}" class="form-control" readonly="" value="<?php echo CURRENCY.number_format($_SESSION['loan_total'], 2, '.', ''); ?>"
                                id="loan_total" maxlength="10">
                     </div>
                 </div>
                 <div class="col-12 col-md-4">
                     <div class="form-group">
-                        <label for="loan_payed" class="bmd-label-floating">Total payed (<?php echo CURRENCY; ?>)</label>
+                        <label for="loan_payed" class="bmd-label-floating">Total payed (<?php echo CURRENCY;?>)</label>
                         <input type="text" pattern="[0-9.]{1,10}" class="form-control" name="loan_payed_reg"
                                id="loan_payed" maxlength="10">
                     </div>
@@ -192,8 +193,7 @@
 </form>
 
 <!-- MODAL CUSTOMER -->
-<div class="modal fade" id="ModalCustomer" tabindex="-1" role="dialog" aria-labelledby="ModalCustomer"
-     aria-hidden="true">
+<div class="modal fade" id="ModalCustomer" tabindex="-1" role="dialog" aria-labelledby="ModalCustomer" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">

@@ -98,10 +98,9 @@ if($_SESSION['privilege_loan'] < 1 || $_SESSION['privilege_loan'] > 2){
             </div>
         </div>
 
-        <form class="Ajax_Form" action="<?php echo SERVER_URL; ?>ajax/loanAjax.php" method="post" data-form="save"
+        <form class="Ajax_Form" action="<?php echo SERVER_URL; ?>ajax/loanAjax.php" method="post" data-form="update"
               autocomplete="off">
-          <input type="hidden" name="loan_code_reg" value="<?php $ins_logout->encryption
-          ($fields['prestamo_codigo']); ?>">
+          <input type="hidden" name="loan_code_up" value="<?php echo $ins_logout->encryption($fields['prestamo_codigo']); ?>">
             <fieldset>
                 <legend><i class="far fa-clock"></i> &nbsp; Fecha y hora de préstamo</legend>
                 <div class="container-fluid">
@@ -154,14 +153,12 @@ if($_SESSION['privilege_loan'] < 1 || $_SESSION['privilege_loan'] > 2){
                     <div class="row">
                         <div class="col-12 col-md-4">
                             <div class="form-group">
-                                <label for="prestamo_estado" class="bmd-label-floating">*** Estado ***</label>
-                                <select class="form-control" name="prestamo_estado_up" id="prestamo_estado">
-                                    <option value="Reservation" <?php if($fields['prestamo_estado'] == "Reservation")
-                                    { echo 'selected=""';}?>>Reservación</option>
-                                    <option value="Loan" <?php if($fields['prestamo_estado'] == "Loan")
-                                    { echo 'selected=""';}?>>Préstamo</option>
+                                <label for="loan_status" class="bmd-label-floating">*** Estado ***</label>
+                                <select class="form-control" name="loan_status_up" id="loan_status">
+                                    <option value="Reservation" <?php if($fields['prestamo_estado'] == "Reservation"){ echo 'selected=""';}?>>Reservation</option>
+                                    <option value="Loan" <?php if($fields['prestamo_estado'] == "Loan"){ echo 'selected=""';}?>>Loan</option>
                                     <option value="Finished" <?php if($fields['prestamo_estado'] == "Finished")
-                                    { echo 'selected=""';}?>>Finalizado</option>
+                                    { echo 'selected=""';}?>>Finished</option>
                                 </select>
                             </div>
                         </div>
@@ -170,16 +167,14 @@ if($_SESSION['privilege_loan'] < 1 || $_SESSION['privilege_loan'] > 2){
                                 <label for="loan_total_up" class="bmd-label-floating">Total a pagar en <?php echo
                                     CURRENCY;
                                     ?></label>
-                                <input type="text" pattern="[0-9.]{1,10}" class="form-control" readonly="" id="loan_total_up" name="loan_total_up" maxlength="10" value="<?php
-                                echo $fields['prestamo_total']; ?>">
+                                <input type="text" pattern="[0-9.]{1,10}" class="form-control" readonly="" id="loan_total_up" name="loan_total_up" maxlength="10" value="<?php echo $fields['prestamo_total']; ?>">
                             </div>
                         </div>
                         <div class="col-12 col-md-4">
                             <div class="form-group">
                                 <label for="loan_payed_up" class="bmd-label-floating">Total depositado en <?php
                                 echo CURRENCY; ?></label>
-                                <input type="text" pattern="[0-9.]{1,10}" class="form-control" readonly="" value="<?php
-                                echo $fields['prestamo_pagado']; ?>" id="loan_payed_up" name="loan_payed_up"
+                                <input type="text" pattern="[0-9.]{1,10}" class="form-control" readonly="" value="<?php echo $fields['prestamo_pagado']; ?>" id="loan_payed_up" name="loan_payed_up"
                               maxlength="10">
                             </div>
                         </div>

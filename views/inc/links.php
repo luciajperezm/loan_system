@@ -6,3 +6,4 @@
 <script src="<?php echo SERVER_URL; ?>views/js/sweetalert2.min.js" ></script>
 <link rel="stylesheet" href="<?php echo SERVER_URL; ?>views/css/jquery.mCustomScrollbar.css">
 <link rel="stylesheet" href="<?php echo SERVER_URL; ?>views/css/style.css">
+<link rel="icon" type="image/x-icon" href="<?php echo SERVER_URL; ?>views/css/favicon-32x32.png">

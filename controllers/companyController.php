@@ -126,11 +126,11 @@ class companyController extends companyModel
         $phone = mainModel::clean_input($_POST['company_phone_up']);
         $address = mainModel::clean_input($_POST['company_address_up']);
 
-        if(mainModel::verify_input_data("[a-zA-Z0-9-]{1,45}", $name)){
+        if(mainModel::verify_input_data("[a-zA-Z0-9- ]{1,45}", $name)){
             $alert = [
                 "Alert" => "simple",
                 "Title" => "Something went wrong",
-                "Text" => "The user's Name is not valid",
+                "Text" => "The company's Name is not valid",
                 "Type" => "error"
             ];
             echo json_encode($alert);

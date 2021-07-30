@@ -6,9 +6,7 @@
     <button class="btn btn__cta"><i class="fas fa-search ic"></i><a href="<?php echo SERVER_URL;
     ?>product-search/">Search Product</a></button>
 </div>
-<form class="Ajax_Form form-neon box" action="<?php echo SERVER_URL;?>ajax/productAjax.php" method="post"
-      data-form="save"
-      autocomplete="off">
+<form class="Ajax_Form form-neon box" action="<?php echo SERVER_URL;?>ajax/productAjax.php" method="post" data-form="save" autocomplete="off">
     <fieldset>
         <legend><i class="fas fa-boxes ic"></i> &nbsp; Product Information</legend>
         <div class="container-fluid">

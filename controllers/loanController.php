@@ -320,7 +320,7 @@ class loanController extends loanModel
     /*--- ADD LOAN CONTROLLER ---*/
     public function add_loan_controller()
     {
-        /*starting sessino */
+        /*starting session */
         session_start(['name' => 'LOAN']);
 
         /* making sure we have items selected */
@@ -334,6 +334,7 @@ class loanController extends loanModel
             echo json_encode($alert);
             exit();
         }
+
         /* making sure we have a customer selected */
         if(empty($_SESSION['data_customer'])){
             $alert = [
@@ -355,7 +356,7 @@ class loanController extends loanModel
         $total_payed = mainModel::clean_input($_POST['loan_payed_reg']);
         $observation = mainModel::clean_input($_POST['loan_observation_reg']);
 
-        if($date_init == "" || $time_init == "" || $date_final == "" || $time_final == "" || $status == ""){
+        /*if($date_init == "" || $time_init == "" || $date_final == "" || $time_final == "" || $status == ""){
             $alert = [
                 "Alert" => "simple",
                 "Title" => "Something went wrong",
@@ -364,7 +365,7 @@ class loanController extends loanModel
             ];
             echo json_encode($alert);
             exit();
-        }
+        }*/
 
         if(mainModel::verify_input_dates($date_init)){
             $alert = [
@@ -434,7 +435,7 @@ class loanController extends loanModel
             }
         }
 
-        if($status =! "Reservation" && $status =! "Loan" && $status =! "Finished"){
+        if($status != "Reservation" && $status != "Loan" && $status != "Finished"){
             $alert = [
                 "Alert" => "simple",
                 "Title" => "Something went wrong",
@@ -651,9 +652,9 @@ class loanController extends loanModel
         
         if($rows['prestamo_estado'] == "Reservation"){
             $table.='<td class="text-center "><span class="badge badge-secondary">'.$rows['prestamo_estado'].'</span></td>';
-        }elseif($rows['prestamo_estado'] == "Loan"){
-            $table.='<td class="text-center "><span class="badge badge-primary">'.$rows['prestamo_estado'].'</span></td>';
         }elseif($rows['prestamo_estado'] == "Finished"){
+            $table.='<td class="text-center "><span class="badge badge-success">'.$rows['prestamo_estado'].'</span></td>';
+        }else{
             $table.='<td class="text-center "><span class="badge badge-success">'.$rows['prestamo_estado'].'</span></td>';
         }
 
@@ -909,6 +910,80 @@ autocomplete="off">
         }
         echo json_encode($alert);
         exit();
+    }
+
+    /*--- UPDATE LOAN CONTROLLER ---*/
+    public function update_loan_controller()
+    {
+        $code = mainModel::decryption($_POST['loan_code_up']);
+        $code = mainModel::clean_input($code);
+
+        $check_loan = mainModel::execute_simple_queries("SELECT prestamo_codigo FROM prestamo WHERE prestamo_codigo='$code'");
+        if($check_loan->rowCount() <= 0){
+            $alert = [
+                "Alert" => "simple",
+                "Title" => "Something went wrong",
+                "Text" => "We couldn't find this loan in the data base",
+                "Type" => "error"
+            ];
+            echo json_encode($alert);
+            exit();
+        }
+
+        $loan_status = mainModel::clean_input($_POST['loan_status_up']);
+        $loan_observation = mainModel::clean_input($_POST['loan_observation_up']);
+
+        if($loan_observation != ""){
+            if(mainModel::verify_input_data("[a-zA-z0-9áéíóúÁÉÍÓÚñÑ#() ]{1,400}", $loan_observation)){
+                $alert = [
+                    "Alert" => "simple",
+                    "Title" => "Something went wrong",
+                    "Text" => "The (Observation) input is not valid",
+                    "Type" => "error"
+                ];
+                echo json_encode($alert);
+                exit();
+            }
+        }
+
+        if($loan_status != "Reservation" && $loan_status != "Loan" && $loan_status != "Finished"){
+            $alert = [
+                "Alert" => "simple",
+                "Title" => "Something went wrong",
+                "Text" => "The status input is not valid",
+                "Type" => "error"
+            ];
+            echo json_encode($alert);
+            exit();
+        }
+
+
+        $data_loan_up = [
+            "Type" => "Loan",
+            "Status" => $loan_status,
+            "Observation" => $loan_observation,
+            "Code" => $code
+        ];
+
+        if(loanModel::update_loan_model($data_loan_up)){
+            $alert = [
+                "Alert" => "reload",
+                "Title" => "Done",
+                "Text" => "The loan was successfully updated",
+                "Type" => "success"
+            ];
+        } else{
+            $alert = [
+                "Alert" => "simple",
+                "Title" => "Something went wrong",
+                "Text" => "We couldn't update this transaction",
+                "Type" => "error"
+            ];
+        }
+        echo json_encode($alert);
+        exit();
+
+
     }
 
 

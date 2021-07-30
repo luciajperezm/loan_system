@@ -80,7 +80,7 @@ class productController extends productModel
             $alert = [
                 "Alert" => "simple",
                 "Title" => "Something went wrong",
-                "Text" => "The Detail input is not valid",
+                "Text" => "The Status input is not valid",
                 "Type" => "error"
             ];
             echo json_encode($alert);

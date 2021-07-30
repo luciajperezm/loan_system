@@ -156,6 +156,9 @@ a:focus {
   margin-left: 15px;
   margin-right: 12px;
 }
+.user-badge{
+    color: #8b7634;
+}
 .fa-user-circle{
   color: #f8f9fa;
 }
@@ -171,7 +174,7 @@ a:focus {
     left: 0;
     height: 100vh;
     z-index: 999;
-    background: #333;
+    background: #333333;
     color: #fff;
     transition: all 0.3s;
 }
@@ -180,7 +183,6 @@ a:focus {
 }
 #sidebar .sidebar-header {
     padding: 20px;
-    background: #333;
 }
 
 #sidebar ul.components {
@@ -197,7 +199,6 @@ a:focus {
     display: block;
 }
 #sidebar ul li a:hover {
-    
     background: rgba(255, 255, 255, 0.219);
 }
 a[data-toggle="collapse"] {
@@ -217,6 +218,12 @@ ul ul a {
     font-size: 0.9em !important;
     padding-left: 30px !important;
     background: #333;
+}
+.logo{
+    width: 10px;
+    padding: 10px;
+    background-image: url("../../views/img/logo.png");
+    background-size: cover;
 }
 
 /* ---------------------------------------------------

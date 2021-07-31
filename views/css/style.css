@@ -43,6 +43,13 @@ body,html{
   height: auto;
   padding-top: 100px;
 }
+.login-cont{
+    background-image: url("../../views/img/hero.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100vh;
+}
 .title-left{
   color: #fff;
 }
@@ -90,17 +97,17 @@ body,html{
 	outline: none;
 }
 .button{
-  background-color: #333;
-  padding: 6px 20px;
-  color: white;
-  border-style: none;
-  border-radius: 2px;
+    background-color: #333;
+    padding: 6px 20px;
+    color: white;
+    border-style: none;
+    border-radius: 2px;
 }
 .button:not(:first-child){
-  margin-bottom: 10px;
+    margin-bottom: 10px;
 }
 .button:not(:last-child){
-margin-right: 10px;
+    margin-right: 10px;
 }
 /*--------------------------------
 --404
@@ -118,7 +125,6 @@ a:focus {
     text-decoration: none;
     transition: all 0.3s;
 }
-
 .navbar {
     padding-top: 15px;
     background-color: #fff;
@@ -139,8 +145,6 @@ a:focus {
     outline: none !important;
     border: none;
 }
-
-
 /* ---------------------------------------------------
     SIDEBAR STYLE
 ----------------------------------------------------- */
@@ -184,7 +188,6 @@ a:focus {
 #sidebar .sidebar-header {
     padding: 20px;
 }
-
 #sidebar ul.components {
     padding: 20px 0;
     border-bottom: 1px solid #333;
@@ -225,7 +228,6 @@ ul ul a {
     background-image: url("../../views/img/logo.png");
     background-size: cover;
 }
-
 /* ---------------------------------------------------
     CONTENT STYLE
 ----------------------------------------------------- */
@@ -318,7 +320,6 @@ th{
   background-color: #8b7634;
   color: #fff;
 }
-
 /* ---------------------------------------------------
   form
 ----------------------------------------------------- */
@@ -335,7 +336,6 @@ label{
 .search-alert{
   margin-bottom: 25px;
 }
-
 /* ---------------------------------------------------
   home
 ----------------------------------------------------- */
@@ -350,7 +350,7 @@ label{
     display: inline-block;
     text-decoration: none;
     color: #333;
-    border: 1px solid #8b7634;
+    border: 1px solid #333;
     border-radius: 3px;
     user-select: none;
     transition: all .2s ease-in-out;
@@ -372,14 +372,10 @@ label{
     line-height: 40px;
     box-sizing: border-box;
     text-transform: uppercase;
-    border-bottom: 1px solid #333333;
     transition: all .2s ease-in-out;
-
-}
-.tile:hover .tile-tittle{
-    color: #FFF;
-    border-color: #1c1c1c;
-    background-color: #1c1c1c;
+    border-color: #333;
+    background-color: #333;
+    color: #f1f1f1;
 }
 .tile-icon{
     width: 100%;
@@ -396,17 +392,11 @@ label{
 }
 .tile:hover .tile-icon > i,
 .tile:hover .tile-icon > p{
-    color: #1c1c1c;
+    color: #333;
 }
-
-
-
-
-
-/* ---------------------------------------------------
+/*---------------------------------
   MEDIA QUERIES
 ----------------------------------------------------- */
-
 @media (max-width: 768px) {
   #sidebar {
       margin-left: -250px;
@@ -424,5 +414,3 @@ label{
       display: none;
   }
 }
-
-

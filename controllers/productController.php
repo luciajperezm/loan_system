@@ -45,7 +45,7 @@ class productController extends productModel
             $alert = [
                 "Alert" => "simple",
                 "Title" => "Something went wrong",
-                "Text" => "The product's Name is not valid",
+                "Text" => "The (Product Name) input is not valid",
                 "Type" => "error"
             ];
             echo json_encode($alert);
@@ -126,7 +126,7 @@ class productController extends productModel
             $alert = [
                 "Alert" => "clean",
                 "Title" => "Great News",
-                "Text" => "This Product successfully registered",
+                "Text" => "This product was successfully registered",
                 "Type" => "success"
             ];
         }else{
@@ -178,11 +178,11 @@ class productController extends productModel
         <thead>
         <tr class="t-row">
             <th>#</th>
-            <th class="text-center ">Code</th>
-        <th class="text-center ">Name</th>
-        <th class="text-center ">Stock</th>
-        <th class="text-center ">detail</th>
-        <th class="text-center ">Status</th>';
+            <th class="text-center">Code</th>
+        <th class="text-center">Name</th>
+        <th class="text-center">Stock</th>
+        <th class="text-center">detail</th>
+        <th class="text-center">Status</th>';
 
         if($privilege == 1 || $privilege == 2){
             $table.='<th class="text-center ">Update</th>';
@@ -246,7 +246,7 @@ autocomplete="off">
         $table.='</tbody></table>';
 
         if($total >= 1 && $page <= $N_pages){
-            $table.='<p class="text-right">'.$reg_final.' out of '.$total.' product(s)</p>';
+            $table.='<p class="text-right">'.$total.' product(s)</p>';
             $table.=mainModel::pagination($page, $N_pages, $url, 7);
         }
 
@@ -279,7 +279,7 @@ autocomplete="off">
             $alert = [
                 "Alert" => "simple",
                 "Title" => "Something went wrong",
-                "Text" => "A loan was made with this product and cannot be delete, you may change its status to Unavailable",
+                "Text" => "A transaction was made with this product and cannot be delete, you may change its status to Unavailable",
                 "Type" => "error"
             ];
             echo json_encode($alert);
@@ -477,8 +477,6 @@ autocomplete="off">
             ];
         }
         echo json_encode($alert);
-
-
 
     }
 

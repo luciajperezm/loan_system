@@ -143,7 +143,8 @@
             $pdf->Ln(12);
 
             $pdf->SetTextColor(97, 97, 97);
-            $pdf->MultiCell(0, 9, utf8_decode("IMPORTANT NOTE: \nEsta factura presenta un saldo pendiente de pago por la cantidad de ".CURRENCY.number_format(($data_loan['prestamo_total'] - $data_loan['prestamo_pagado']), 2, '.','')), 0, 'J', false);
+            $pdf->MultiCell(0, 9, utf8_decode("IMPORTANT NOTE: \nThis transaction has a pending payment of ".CURRENCY
+                .number_format(($data_loan['prestamo_total'] - $data_loan['prestamo_pagado']), 2, '.','')), 0, 'J', false);
         }
 
         $pdf->Ln(25);
@@ -178,7 +179,7 @@
             <div class="container">
                 <p class="text-center page__404"><i class="fas fa-search fa-10x"></i></p>
                 <h1 class="text-center">Something went wrong!</h1>
-                <p class="lead text-center">We couldn't find the selected loan</p>
+                <p class="lead text-center">We couldn't find the selected Transaction</p>
             </div>
 
         <?php include "../views/inc/scripts.php";?>

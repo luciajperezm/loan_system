@@ -130,7 +130,7 @@ class companyController extends companyModel
             $alert = [
                 "Alert" => "simple",
                 "Title" => "Something went wrong",
-                "Text" => "The company's Name is not valid",
+                "Text" => "The (Company Name) input is not valid",
                 "Type" => "error"
             ];
             echo json_encode($alert);
@@ -141,7 +141,7 @@ class companyController extends companyModel
             $alert = [
                 "Alert" => "simple",
                 "Title" => "Something went wrong",
-                "Text" => "This Email is not valid",
+                "Text" => "The (Email) input is not valid",
                 "Type" => "error"
             ];
             echo json_encode($alert);
@@ -152,7 +152,7 @@ class companyController extends companyModel
             $alert = [
                 "Alert" => "simple",
                 "Title" => "Something went wrong",
-                "Text" => "The Phone number is not valid",
+                "Text" => "The (Phone) input is not valid",
                 "Type" => "error"
             ];
             echo json_encode($alert);
@@ -163,7 +163,7 @@ class companyController extends companyModel
             $alert = [
                 "Alert" => "simple",
                 "Title" => "Something went wrong",
-                "Text" => "The Address is not valid",
+                "Text" => "The (Address) input is not valid",
                 "Type" => "error"
             ];
             echo json_encode($alert);
@@ -175,7 +175,7 @@ class companyController extends companyModel
             $alert = [
                 "Alert" => "simple",
                 "Title" => "Something went wrong",
-                "Text" => "You are not allowed to update this account ",
+                "Text" => "You are not allowed to update this account",
                 "Type" => "error"
             ];
             echo json_encode($alert);

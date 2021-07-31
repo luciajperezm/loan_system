@@ -1,6 +1,6 @@
 <nav id="sidebar">
     <div class="sidebar-header">
-      <h4>Management System</h4>
+      <h4>Management System</h4><br>
     </div>
     <div class="user__profile">
         <div class="side1">
@@ -10,12 +10,13 @@
             <span class="user__profile-name"><?php echo $_SESSION['name_loan']." ".$_SESSION['last_name_loan'];?></span><br>
             <span class="user__profile-job"><?php echo $_SESSION['username_loan']; ?></span>
         </div>
+        <br>
     </div>
     <ul class="list-unstyled components">
         <li>
             <a href="<?php echo SERVER_URL;?>home/"><i class="fas fa-home icon"></i>Dashboard</a>
         </li>
-       <li>
+        <li>
             <a href="#productSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><i class="fas fa-boxes icon"></i>Products</a>
             <ul class="collapse list-unstyled" id="productSubmenu">
                 <li>
@@ -29,50 +30,43 @@
                       Product</a>
                 </li>
             </ul>
-       </li>
-       <li>
+        </li>
+        <li>
             <a href="#customerSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><i class="fas fa-user-friends icon"></i>Customers</a>
             <ul class="collapse list-unstyled" id="customerSubmenu">
                 <li>
                     <a href="<?php echo SERVER_URL;?>customer-new/"><i class="fas fa-plus icon"></i>New Customer</a>
                 </li>
                 <li>
-                    <a href="<?php echo SERVER_URL;?>customer-list/"><i class="fas fa-list icon"></i>List of
-                      Customers</a>
+                    <a href="<?php echo SERVER_URL;?>customer-list/"><i class="fas fa-list icon"></i>List of Customers</a>
                 </li>
                 <li>
-                    <a href="<?php echo SERVER_URL;?>customer-search/"><i class="fas fa-search icon"></i>Search
-                      Customer</a>
+                    <a href="<?php echo SERVER_URL;?>customer-search/"><i class="fas fa-search icon"></i>Search Customer</a>
                 </li>
             </ul>
-       </li>
-       <li>
-            <a href="#reservation_submenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><i
-                    class="fas
-            fa-hand-holding-usd icon"></i>Loans</a>
+        </li>
+        <li>
+            <a href="#reservation_submenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><i class="fas fa-hand-holding-usd icon"></i>Loans</a>
             <ul class="collapse list-unstyled" id="reservation_submenu">
                 <li>
-                    <a href="<?php echo SERVER_URL;?>reservation-new/"><i class="fas fa-plus icon"></i>New Loan</a>
+                    <a href="<?php echo SERVER_URL;?>reservation-new/"><i class="fas fa-plus icon"></i>New Lease</a>
                 </li>
                 <li>
-                    <a href="<?php echo SERVER_URL;?>reservation-reservation/"><i class="fas fa-calendar
-                    icon"></i>Reservations</a>
+                    <a href="<?php echo SERVER_URL;?>reservation-reservation/"><i class="fas fa-calendar icon"></i>Reservations</a>
                 </li>
                 <li>
-                    <a href="<?php echo SERVER_URL;?>reservation-pending/"><i class="fas fa-business-time
-                    icon"></i>Loans</a>
+                    <a href="<?php echo SERVER_URL;?>reservation-pending/"><i class="fas fa-business-time icon"></i>Active Leases</a>
                 </li>
                 <li>
-                    <a href="<?php echo SERVER_URL;?>reservation-list/"><i class="fas fa-list icon"></i>Finished</a>
+                    <a href="<?php echo SERVER_URL;?>reservation-list/"><i class="fas fa-list icon"></i>Payed Leases</a>
                 </li>
                 <li>
-                    <a href="<?php echo SERVER_URL;?>reservation-search/"><i class="fas fa-search icon"></i>Search
-                      loan by date</a>
+                    <a href="<?php echo SERVER_URL;?>reservation-search/"><i class="fas fa-search icon"></i>Search lease by date</a>
                 </li>
             </ul>
         </li>
        <?php if($_SESSION['privilege_loan'] == 1){ ?>
-       <li>
+        <li>
             <a href="#userSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><i class="fas fa-id-card-alt icon"></i>Users</a>
             <ul class="collapse list-unstyled" id="userSubmenu">
                 <li>

@@ -46,7 +46,7 @@ class customerController extends customerModel
             $alert = [
                 "Alert" => "simple",
                 "Title" => "Something went wrong",
-                "Text" => "The Customer's Name is not valid",
+                "Text" => "The (Customer Name) input is not valid",
                 "Type" => "error"
             ];
             echo json_encode($alert);
@@ -57,19 +57,18 @@ class customerController extends customerModel
             $alert = [
                 "Alert" => "simple",
                 "Title" => "Something went wrong",
-                "Text" => "The Customer's Last name is not valid",
+                "Text" => "The (Customer Last name) input is not valid",
                 "Type" => "error"
             ];
             echo json_encode($alert);
             exit();
         }
 
-
         if(mainModel::verify_input_data("[0-9+-]{1,15}", $phone)){
             $alert = [
                 "Alert" => "simple",
                 "Title" => "Something went wrong",
-                "Text" => "The Phone number is not valid",
+                "Text" => "The (Phone) input is not valid",
                 "Type" => "error"
             ];
             echo json_encode($alert);
@@ -93,7 +92,7 @@ class customerController extends customerModel
             $alert = [
                 "Alert" => "simple",
                 "Title" => "Something went wrong",
-                "Text" => "The DNI is already registered",
+                "Text" => "This ID is already registered",
                 "Type" => "error"
             ];
             echo json_encode($alert);
@@ -121,7 +120,7 @@ class customerController extends customerModel
             $alert = [
                 "Alert" => "simple",
                 "Title" => "Something went wrong",
-                "Text" => "We couldn't register this user",
+                "Text" => "We couldn't register this Customer",
                 "Type" => "error"
             ];
         }
@@ -166,7 +165,7 @@ class customerController extends customerModel
         <thead>
         <tr class="t-row">
             <th>#</th>
-            <th class="text-center ">DNI</th>
+            <th class="text-center ">ID</th>
             <th class="text-center ">Full Name</th>
             <th class="text-center ">Phone</th>
             <th class="text-center ">Address</th>';
@@ -230,7 +229,7 @@ autocomplete="off">
         $table.='</tbody></table>';
 
         if($total >= 1 && $page <= $N_pages){
-            $table.='<p class="text-right">'.$reg_final.' out of '.$total.' customer(s)</p>';
+            $table.='<p class="text-right">'.$total.' customer(s)</p>';
             $table.=mainModel::pagination($page, $N_pages, $url, 7);
         }
 
@@ -261,7 +260,7 @@ autocomplete="off">
             $alert = [
                 "Alert" => "simple",
                 "Title" => "We can't delete this user",
-                "Text" => "We can't delete this this customer because they have made loans before",
+                "Text" => "We can't delete this this customer because they are involved in a previous transaction",
                 "Type" => "error"
             ];
             echo json_encode($alert);
@@ -356,7 +355,7 @@ autocomplete="off">
             $alert = [
                 "Alert" => "simple",
                 "Title" => "Something went wrong",
-                "Text" => "The DNI number is not valid",
+                "Text" => "The ID number is not valid",
                 "Type" => "error"
             ];
             echo json_encode($alert);
@@ -367,7 +366,7 @@ autocomplete="off">
             $alert = [
                 "Alert" => "simple",
                 "Title" => "Something went wrong",
-                "Text" => "The user's Name is not valid",
+                "Text" => "The Name input is not valid",
                 "Type" => "error"
             ];
             echo json_encode($alert);
@@ -378,7 +377,7 @@ autocomplete="off">
             $alert = [
                 "Alert" => "simple",
                 "Title" => "Something went wrong",
-                "Text" => "The user's Last name is not valid",
+                "Text" => "The Last name is not valid",
                 "Type" => "error"
             ];
             echo json_encode($alert);
@@ -412,7 +411,7 @@ autocomplete="off">
             $alert = [
                 "Alert" => "simple",
                 "Title" => "Something went wrong",
-                "Text" => "You are not allowed to update this account ",
+                "Text" => "You are not allowed to update this customer",
                 "Type" => "error"
             ];
             echo json_encode($alert);
@@ -445,6 +444,5 @@ autocomplete="off">
         }
         echo json_encode($alert);
     }
-
 }
 

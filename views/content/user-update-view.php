@@ -10,8 +10,9 @@ if($ins_logout->encryption($_SESSION['id_loan']) != $page[1]){
 <p>Here you can update the selected profile, make sure the changes you make are correct. </p>
 <?php if($_SESSION['privilege_loan'] == 1){ ?>
 <div class="buttons">
-    <button class="btn btn__cta"><i class="fas fa-list ic"></i><a href="<?php echo SERVER_URL;?>user-list/">List of Users</a> </button>
-    <button class="btn btn__cta"><i class="fas fa-search ic"></i><a href="<?php echo SERVER_URL;?>user-search/">Search Users</a></button>
+  <button class="btn btn__cta"><i class="fas fa-plus ic"></i><a href="<?php echo SERVER_URL;?>user-new/">New User</a></button>
+  <button class="btn btn__cta"><i class="fas fa-list ic"></i><a href="<?php echo SERVER_URL;?>user-list/">List of Users</a></button>
+  <button class="btn btn__cta"><i class="fas fa-search ic"></i><a href="<?php echo SERVER_URL;?>user-search/">Search Users</a></button>
 </div>
 <?php } ?>
 <?php
@@ -30,7 +31,7 @@ require_once "./controllers/userController.php";
                 <div class="row">
                     <div class="col-12 col-md-3">
                         <div class="form-group">
-                            <label for="user_dni" class="bmd-label-floating">DNI </label>
+                            <label for="user_dni" class="bmd-label-floating">DNI: </label>
                             <input type="text" pattern="[0-9-]{1,20}" class="form-control" name="user_dni_up"
                                    id="user_dni" maxlength="20" value="<?php echo
                             $fields['usuario_dni']; ?>">
@@ -38,7 +39,7 @@ require_once "./controllers/userController.php";
                     </div>
                     <div class="col-12 col-md-3">
                         <div class="form-group">
-                            <label for="user_firstname" class="bmd-label-floating">First Name </label>
+                            <label for="user_firstname" class="bmd-label-floating">First Name: </label>
                             <input type="text" pattern="[a-zA-Z0-9-]{1,45}" class="form-control" name="user_firstname_up"
                                    id="user_firstname" maxlength="45" value="<?php echo
                             $fields['usuario_nombre']; ?>">
@@ -46,7 +47,7 @@ require_once "./controllers/userController.php";
                     </div>
                     <div class="col-12 col-md-3">
                         <div class="form-group">
-                            <label for="user_lastname" class="bmd-label-floating">Last Name </label>
+                            <label for="user_lastname" class="bmd-label-floating">Last Name: </label>
                             <input type="text" pattern="[a-zA-Z0-9-]{1,45}" class="form-control" name="user_lastname_up"
                                    id="user_lastname" maxlength="45" value="<?php echo
                             $fields['usuario_apellido']; ?>">
@@ -54,7 +55,7 @@ require_once "./controllers/userController.php";
                     </div>
                     <div class="col-12 col-md-3">
                         <div class="form-group">
-                            <label for="user_phone" class="bmd-label-floating">Phone</label>
+                            <label for="user_phone" class="bmd-label-floating">Phone:</label>
                             <input type="text" pattern="[0-9+-]{1,15}" class="form-control" name="user_phone_up"
                                    id="user_phone" maxlength="15" value="<?php echo
                             $fields['usuario_telefono']; ?>">
@@ -62,7 +63,7 @@ require_once "./controllers/userController.php";
                     </div>
                     <div class="col-12 ">
                         <div class="form-group">
-                            <label for="user_address" class="bmd-label-floating">Address</label>
+                            <label for="user_address" class="bmd-label-floating">Address:</label>
                             <input type="text" pattern="[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ().,#\- ]{1,150}" class="form-control"
                                    name="user_address_up" id="user_address" maxlength="150" value="<?php echo
                             $fields['usuario_direccion']; ?>">
@@ -77,7 +78,7 @@ require_once "./controllers/userController.php";
             <div class="row">
                 <div class="col-12 col-md-6">
                     <div class="form-group">
-                        <label for="user_username" class="bmd-label-floating">Username</label>
+                        <label for="user_username" class="bmd-label-floating">Username:</label>
                         <input type="text" pattern="[a-zA-Z0-9]{1,35}" class="form-control" name="user_username_up"
                                id="user_username" maxlength="35" value="<?php echo
                         $fields['usuario_usuario']; ?>">
@@ -85,7 +86,7 @@ require_once "./controllers/userController.php";
                 </div>
                 <div class="col-12 col-md-6">
                     <div class="form-group">
-                        <label for="user_email" class="bmd-label-floating">Email</label>
+                        <label for="user_email" class="bmd-label-floating">Email:</label>
                         <input type="email" class="form-control" name="user_email_up" id="user_email" maxlength="70"
                                value="<?php echo
                         $fields['usuario_email']; ?>">
@@ -93,14 +94,14 @@ require_once "./controllers/userController.php";
                 </div>
                 <div class="col-12 col-md-6">
                     <div class="form-group">
-                        <label for="user_password_1" class="bmd-label-floating">Password</label>
+                        <label for="user_password_1" class="bmd-label-floating">Password:</label>
                         <input type="password" class="form-control" name="user_password_1_up" id="user_password_1"
                                pattern="[a-zA-Z0-9$@.-]{7,100}" maxlength="100" >
                     </div>
                 </div>
                 <div class="col-12 col-md-6">
                     <div class="form-group">
-                        <label for="user_password_2" class="bmd-label-floating">Repeat Password</label>
+                        <label for="user_password_2" class="bmd-label-floating">Repeat Password:</label>
                         <input type="password" class="form-control" name="user_password_2_up" id="user_password_2"
                                pattern="[a-zA-Z0-9$@.-]{7,100}" maxlength="100" >
                     </div>
@@ -151,14 +152,14 @@ require_once "./controllers/userController.php";
           <div class="row">
               <div class="col-12 col-md-6">
                   <div class="form-group">
-                      <label for="user_admin" class="bmd-label-floating">Username</label>
-                      <input type="text" pattern="[a-zA-Z0-9]{1,35}" class="form-control" name="user_admin" id="user_admin" maxlength="35" required="" >
+                      <label for="user_admin" class="bmd-label-floating">Username:</label>
+                      <input type="text" pattern="[a-zA-Z0-9]{1,35}" class="form-control" name="user_admin" id="user_admin" maxlength="35" required="">
                   </div>
               </div>
               <div class="col-12 col-md-6">
                   <div class="form-group">
-                      <label for="admin_password" class="bmd-label-floating">Password</label>
-                      <input type="password" class="form-control" name="admin_password" id="admin_password" pattern="[a-zA-Z0-9$@-]{7,100}" maxlength="100" required="" >
+                      <label for="admin_password" class="bmd-label-floating">Password:</label>
+                      <input type="password" class="form-control" name="admin_password" id="admin_password" pattern="[a-zA-Z0-9$@-]{7,100}" maxlength="100" required="">
                   </div>
               </div>
         </div>

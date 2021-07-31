@@ -124,7 +124,4 @@ class loginController extends loginModel
         }
         echo json_encode($alert);
     }
-
-
-
 }

@@ -206,7 +206,7 @@ class loanController extends loanModel
             $alert = [
                 "Alert" => "simple",
                 "Title" => "Something went wrong",
-                "Text" => "The Quantity is not correct",
+                "Text" => "The Quantity is not valid",
                 "Type" => "error"
             ];
             echo json_encode($alert);
@@ -217,7 +217,7 @@ class loanController extends loanModel
             $alert = [
                 "Alert" => "simple",
                 "Title" => "Something went wrong",
-                "Text" => "The Time is not correct",
+                "Text" => "The Time is not valid",
                 "Type" => "error"
             ];
             echo json_encode($alert);
@@ -228,7 +228,7 @@ class loanController extends loanModel
             $alert = [
                 "Alert" => "simple",
                 "Title" => "Something went wrong",
-                "Text" => "The Cost is not correct",
+                "Text" => "The Cost is not valid",
                 "Type" => "error"
             ];
             echo json_encode($alert);
@@ -239,7 +239,7 @@ class loanController extends loanModel
             $alert = [
                 "Alert" => "simple",
                 "Title" => "Something went wrong",
-                "Text" => "The Format is not correct",
+                "Text" => "The Format is not valid",
                 "Type" => "error"
             ];
             echo json_encode($alert);
@@ -356,22 +356,11 @@ class loanController extends loanModel
         $total_payed = mainModel::clean_input($_POST['loan_payed_reg']);
         $observation = mainModel::clean_input($_POST['loan_observation_reg']);
 
-        /*if($date_init == "" || $time_init == "" || $date_final == "" || $time_final == "" || $status == ""){
-            $alert = [
-                "Alert" => "simple",
-                "Title" => "Something went wrong",
-                "Text" => "Some input fields are empty",
-                "Type" => "error"
-            ];
-            echo json_encode($alert);
-            exit();
-        }*/
-
         if(mainModel::verify_input_dates($date_init)){
             $alert = [
                 "Alert" => "simple",
                 "Title" => "Something went wrong",
-                "Text" => "The initial date is not valid",
+                "Text" => "The date input is not valid",
                 "Type" => "error"
             ];
             echo json_encode($alert);
@@ -382,7 +371,7 @@ class loanController extends loanModel
             $alert = [
                 "Alert" => "simple",
                 "Title" => "Something went wrong",
-                "Text" => "The initial time is not valid",
+                "Text" => "The time input is not valid",
                 "Type" => "error"
             ];
             echo json_encode($alert);
@@ -393,7 +382,7 @@ class loanController extends loanModel
             $alert = [
                 "Alert" => "simple",
                 "Title" => "Something went wrong",
-                "Text" => "The final date is not valid",
+                "Text" => "The return date is not valid",
                 "Type" => "error"
             ];
             echo json_encode($alert);
@@ -404,7 +393,7 @@ class loanController extends loanModel
             $alert = [
                 "Alert" => "simple",
                 "Title" => "Something went wrong",
-                "Text" => "The time input is not valid",
+                "Text" => "The return time input is not valid",
                 "Type" => "error"
             ];
             echo json_encode($alert);
@@ -446,7 +435,7 @@ class loanController extends loanModel
             exit();
         }
 
-        /* making sure dates are right */
+        /* making sure the dates are valid */
         if(strtotime($date_final) < strtotime($date_init)){
             $alert = [
                 "Alert" => "simple",
@@ -493,7 +482,7 @@ class loanController extends loanModel
             $alert = [
                 "Alert" => "simple",
                 "Title" => "Something went wrong",
-                "Text" => "We couldn't register the Loan (Error L1)",
+                "Text" => "We couldn't register this transaction (Error 001)",
                 "Type" => "error"
             ];
             echo json_encode($alert);
@@ -515,7 +504,7 @@ class loanController extends loanModel
                 $alert = [
                     "Alert" => "simple",
                     "Title" => "Something went wrong",
-                    "Text" => "We couldn't register the Loan (Error L2)",
+                    "Text" => "We couldn't register this transaction (Error 002)",
                     "Type" => "error"
                 ];
                 echo json_encode($alert);
@@ -553,7 +542,7 @@ class loanController extends loanModel
             $alert = [
                 "Alert" => "reload",
                 "Title" => "Done!",
-                "Text" => "The Loan was successfully registered",
+                "Text" => "The Lease was successfully registered",
                 "Type" => "success"
             ];
         }else {
@@ -563,7 +552,7 @@ class loanController extends loanModel
             $alert = [
                 "Alert" => "simple",
                 "Title" => "Something went wrong",
-                "Text" => "We couldn't register the Loan (Error L3)",
+                "Text" => "We couldn't register this transaction (Error 003)",
                 "Type" => "error"
             ];
         }
@@ -625,7 +614,7 @@ class loanController extends loanModel
         <tr class="t-row">
             <th>#</th>
             <th class="text-center ">Customer</th>
-            <th class="text-center ">Loan date</th>
+            <th class="text-center ">Date</th>
             <th class="text-center ">return date</th>
             <th class="text-center ">type</th>
             <th class="text-center ">status</th>
@@ -677,8 +666,7 @@ class loanController extends loanModel
         if($privilege == 1 || $privilege == 2){
             if($rows['prestamo_estado'] == "Finished" && $rows['prestamo_pagado'] == $rows['prestamo_total']){
                 $table.='<td class="text-center ">
-                    <button class="btn 
-                btn-success" disabled>
+                    <button class="btn btn-success" disabled>
                         <i class="fas fa-sync-alt"></i>
                     </button>
                 </td>';
@@ -690,9 +678,7 @@ class loanController extends loanModel
                     </a>
                 </td>';
             }
-
         }
-
                 if($privilege == 1){
                     $table.='<td class="text-center ">
             <form class="Ajax_Form form-table" action="'.SERVER_URL.'ajax/loanAjax.php" method="post" data-form="delete"
@@ -713,13 +699,13 @@ autocomplete="off">
             if($total >= 1){
                 $table.='<tr><td colspan="9" class="text-center"><a href="'.$url.'" class="btn btn-raised btn-success btn-sm">CLick here to reload list</a></td></tr>';
             }else {
-                $table.='<tr><td colspan="9" class="text-center">There are no loans registered in the system</td></tr>';
+                $table.='<tr><td colspan="9" class="text-center">There are no transactions registered in the system</td></tr>';
             }
         }
         $table.='</tbody></table>';
 
         if($total >= 1 && $page <= $N_pages){
-            $table.='<p class="text-right">'.$reg_final.' out of '.$total.' loan(s)</p>';
+            $table.='<p class="text-right">'.$total.' loan(s)</p>';
             $table.=mainModel::pagination($page, $N_pages, $url, 7);
         }
 
@@ -738,7 +724,7 @@ autocomplete="off">
             $alert = [
                 "Alert" => "simple",
                 "Title" => "Something went wrong",
-                "Text" => "We couldn't find this loan in the data base",
+                "Text" => "We couldn't find this transaction",
                 "Type" => "error"
             ];
             echo json_encode($alert);
@@ -767,7 +753,7 @@ autocomplete="off">
                 $alert = [
                     "Alert" => "simple",
                     "Title" => "Something went wrong",
-                    "Text" => "We couldn't delete this loan (Error Payment)",
+                    "Text" => "We couldn't delete this transaction (Error Payment)",
                     "Type" => "error"
                 ];
                 echo json_encode($alert);
@@ -784,7 +770,7 @@ autocomplete="off">
                 $alert = [
                     "Alert" => "simple",
                     "Title" => "Something went wrong",
-                    "Text" => "We couldn't delete this loan (Error Detail)",
+                    "Text" => "We couldn't delete this transaction (Error Detail)",
                     "Type" => "error"
                 ];
                 echo json_encode($alert);
@@ -797,14 +783,14 @@ autocomplete="off">
             $alert = [
                 "Alert" => "reload",
                 "Title" => "Done",
-                "Text" => "The Loan was successfully deleted",
+                "Text" => "The Lease was successfully deleted",
                 "Type" => "success"
             ];
         }else{
             $alert = [
                 "Alert" => "simple",
                 "Title" => "Something went wrong",
-                "Text" => "We couldn't delete this loan (Error Loan)",
+                "Text" => "We couldn't delete this transaction (Error Loan)",
                 "Type" => "error"
             ];
         }
@@ -838,7 +824,7 @@ autocomplete="off">
             $alert = [
                 "Alert" => "simple",
                 "Title" => "Something went wrong",
-                "Text" => "We couldn't find this loan in the data base",
+                "Text" => "We couldn't find this transaction",
                 "Type" => "error"
             ];
             echo json_encode($alert);
@@ -923,7 +909,7 @@ autocomplete="off">
             $alert = [
                 "Alert" => "simple",
                 "Title" => "Something went wrong",
-                "Text" => "We couldn't find this loan in the data base",
+                "Text" => "We couldn't find this transaction",
                 "Type" => "error"
             ];
             echo json_encode($alert);
@@ -969,7 +955,7 @@ autocomplete="off">
             $alert = [
                 "Alert" => "reload",
                 "Title" => "Done",
-                "Text" => "The loan was successfully updated",
+                "Text" => "The Lease was successfully updated",
                 "Type" => "success"
             ];
         } else{
@@ -982,10 +968,7 @@ autocomplete="off">
         }
         echo json_encode($alert);
         exit();
-
-
     }
-
 
 }
 

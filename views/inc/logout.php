@@ -1,10 +1,4 @@
 <script>
-
-
-
-
-
-
     let btn_logout = document.querySelector(".btn-exit-system");
     btn_logout.addEventListener('click', function(e){
         e.preventDefault();

@@ -5,12 +5,11 @@ if($_SESSION['privilege_loan'] != 1){
 }
 ?>
 <h2>Search Users</h2>
-<p>Here you can search the registered users of the company. If the user is not registered you can add it to the system clicking on the "New user" button. </p>
+<p>Here you can search the registered users of the company.</p>
 <div class="buttons" style="margin: 0;">
-    <button class="btn btn__cta"><i class="fas fa-plus ic"></i><a href="<?php echo SERVER_URL;?>user-new/">New
-        User</a> </button>
-    <button class="btn btn__cta"><i class="fas fa-list ic"></i><a href="<?php echo SERVER_URL;?>user-list/">List of
-        Users</a></button>
+  <button class="btn btn__cta"><i class="fas fa-plus ic"></i><a href="<?php echo SERVER_URL;?>user-new/">New User</a></button>
+  <button class="btn btn__cta"><i class="fas fa-list ic"></i><a href="<?php echo SERVER_URL;?>user-list/">List of Users</a></button>
+  <button class="btn btn__cta active"><i class="fas fa-search ic"></i><a href="<?php echo SERVER_URL;?>user-search/">Search Users</a></button>
 </div>
 <?php
 if(!isset($_SESSION['search_user']) && empty($_SESSION['search_user'])){
@@ -19,7 +18,7 @@ if(!isset($_SESSION['search_user']) && empty($_SESSION['search_user'])){
     <form class="Ajax_Form form-neon" action="<?php echo SERVER_URL;?>ajax/searchAjax.php"
           method="post"
           autocomplete="off" style="margin: 0;">
-      <input type="hidden" name="module" value="user">
+        <input type="hidden" name="module" value="user">
         <div class="container-fluid">
             <div class="row justify-content-md-center"  style="margin: 0;">
                 <div class="col-12 col-md-6">
@@ -40,7 +39,7 @@ if(!isset($_SESSION['search_user']) && empty($_SESSION['search_user'])){
 <?php }else {?>
 <div class="alert alert-dark text-center search-alert" role="alert">
     <form class="Ajax_Form" action="<?php echo SERVER_URL;?>ajax/searchAjax.php" method="post" autocomplete="off" data-form="search" >
-      <input type="hidden" name="module" value="user">
+        <input type="hidden" name="module" value="user">
         <input type="hidden" name="delete_search" value="delete">
         <div class="container-fluid">
             <div class="row justify-content-md-center" >
@@ -58,7 +57,6 @@ if(!isset($_SESSION['search_user']) && empty($_SESSION['search_user'])){
         </div>
     </form>
 </div>
-
 <?php require_once "./controllers/userController.php";
 $ins_user = new userController();
 echo $ins_user->pagination_user_controller($page[1], 15, $_SESSION['privilege_loan'],$_SESSION['id_loan'],

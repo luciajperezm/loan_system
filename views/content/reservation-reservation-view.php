@@ -1,16 +1,11 @@
 <h2>Reservations</h2>
-<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad dolore doloremque error explicabo fuga in ipsa
-    labore laborum libero minima molestiae</p>
+<p>Here you can find the list of reservations made by customers</p>
 <div class="buttons">
-    <button
-        class="btn btn__cta"><i class="fas fa-plus ic"></i><a href="<?php echo SERVER_URL;?>reservation-new/">New
-        Loan</a></button>
-    <button class="btn btn__cta"><i class="fas fa-business-time ic"></i><a href="<?php echo SERVER_URL;
-    ?>reservation-pending/">Loans</a></button>
-    <button class="btn btn__cta"><i class="fas fa-list ic"></i><a href="<?php echo SERVER_URL;
-    ?>reservation-list/">Finished Loans</a></button>
-    <button class="btn btn__cta"><i class="fas fa-search ic"></i><a href="<?php echo SERVER_URL;
-    ?>reservation-search/">Search Loans</a></button>
+  <button class="btn btn__cta"><i class="fas fa-plus ic"></i><a href="<?php echo SERVER_URL;?>reservation-new/">New Lease</a></button>
+  <button class="btn btn__cta"><i class="fas fa-business-time ic"></i><a href="<?php echo SERVER_URL;?>reservation-pending/">Active Leases</a></button>
+  <button class="btn btn__cta active"><i class="fas fa-calendar ic"></i><a href="<?php echo SERVER_URL;?>reservation-reservation/">Reservations</a></button>
+  <button class="btn btn__cta"><i class="fas fa-search ic"></i><a href="<?php echo SERVER_URL;?>reservation-search/">Search Lease</a></button>
+  <button class="btn btn__cta"><i class="fas fa-list ic"></i><a href="<?php echo SERVER_URL;?>reservation-list/">Payed Leases</a></button>
 </div>
 
 <?php require_once "./controllers/loanController.php";

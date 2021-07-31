@@ -1,3 +1,4 @@
+<?php session_start(['name' => 'LOAN']); ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,7 +17,7 @@
     if($views == "login" || $views == "404"){
       require_once "./views/content/".$views."-view.php";
     }else {
-        session_start(['name' => 'LOAN']);
+
 
         $page = explode("/", $_GET['views']);
 
@@ -25,7 +26,7 @@
 
         if(!isset($_SESSION['token_loan']) || !isset($_SESSION['username_loan']) || !isset
             ($_SESSION['privilege_loan']) || !isset($_SESSION['id_loan'])){
-            echo $ins_logout->force_logout_controller();
+            $ins_logout->force_logout_controller();
             exit();
         }
 ?>

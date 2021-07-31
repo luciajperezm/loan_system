@@ -74,7 +74,12 @@ class loginController extends loginModel
             $_SESSION['privilege_loan'] = $row['usuario_privilegio'];
             $_SESSION['token_loan'] = md5(uniqid(mt_rand(), true));
 
-            return header("Location: ".SERVER_URL."home/");
+            if(headers_sent()){
+                echo "<script>window.location.href='".SERVER_URL."home/';</script>";
+            }else {
+                return header("Location: ".SERVER_URL."home/");
+            }
+
         }else{
             echo '<script>
                 Swal.fire({
@@ -94,7 +99,7 @@ class loginController extends loginModel
         session_destroy();
 
         if(headers_sent()){
-            return "<script>window.location.href='".SERVER_URL."login/';</script>";
+            echo "<script>window.location.href='".SERVER_URL."login/';</script>";
         }else {
             return header("Location: ".SERVER_URL."login/");
         }

@@ -3,8 +3,8 @@
     /*--- Here we manage the database connection using PDO ---*/
     const SERVER = "localhost";
     const DB = "loan_system";
-    const USER = "root";
-    const PASS = "";
+    const USER = 'root';
+    const PASS = '';
 
     /*--- DBM: DataBase Manager ---*/
     const DBM = "mysql:host=".SERVER.";dbname=".DB;
